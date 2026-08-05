@@ -154,6 +154,16 @@
   ],
   "projects": [
     {
+      "name": "RevvUp-Main-Application",
+      "description": "RevvUp premium multi-showroom motorbike marketplace | RevvUp — main app (frontend + backend submodules)",
+      "highlights": [
+        "Engineered a multi-showroom motorbike marketplace using TypeScript, JavaScript, and CSS to deliver responsive, interactive user interfaces across complex catalog workflows.",
+        "Developed modular backend application services and data integration components utilizing Python within a structured submodule architecture.",
+        "Automated build execution, repository submodule synchronization, and environment setup tasks using PowerShell scripts to streamline deployment pipelines."
+      ],
+      "url": "https://github.com/ChamathDilshanC/RevvUp-Main-Application"
+    },
+    {
       "name": "VibeNet-Main",
       "description": "VibeNet monorepo — architecture docs, AWS setup guide, and frontend/backend git submodules.",
       "highlights": [
