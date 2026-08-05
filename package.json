@@ -1,0 +1,25 @@
+{
+  "name": "resume-core",
+  "version": "1.0.0",
+  "description": "Automated, event-driven Software Engineering resume pipeline built entirely on GitHub Actions.",
+  "private": true,
+  "main": "generate-pdf.js",
+  "scripts": {
+    "generate": "node generate-pdf.js",
+    "fetch-repo-data": "node scripts/fetch-repo-data.js",
+    "generate-bullets": "node scripts/generate-bullets.js",
+    "merge-project": "node scripts/merge-project.js",
+    "merge-work": "node scripts/merge-work.js",
+    "parse-issue": "node scripts/parse-issue.js"
+  },
+  "author": "Chamath Dilshan",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "fs-extra": "^11.2.0",
+    "handlebars": "^4.7.8",
+    "puppeteer": "^23.9.0"
+  }
+}
