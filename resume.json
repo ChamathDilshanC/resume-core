@@ -154,6 +154,15 @@
   ],
   "projects": [
     {
+      "name": "Cafeteria-System-Main",
+      "description": "",
+      "highlights": [
+        "Engineered a responsive cafeteria management web application using Vue and JavaScript to facilitate real-time menu updates, item customization, and efficient order tracking.",
+        "Architected interactive user interfaces with dynamic Vue components, leveraging semantic HTML and custom CSS to create an intuitive and accessible experience across all devices."
+      ],
+      "url": "https://github.com/ChamathDilshanC/Cafeteria-System-Main"
+    },
+    {
       "name": "FinFlow-Mobile-Application-Main-Repo",
       "description": "FinFlow umbrella (submodules: frontend + backend)",
       "highlights": [
