@@ -27,7 +27,6 @@ a {
   text-decoration: underline;
 }
 
-.section,
 .project-item,
 .work-item {
   page-break-inside: avoid;
@@ -60,11 +59,13 @@ a {
   font-weight: 700;
   color: #1a1a1a;
   margin: 2px 0 6px;
+  text-align: left;
 }
 
 .header .contact {
   font-size: 10pt;
   color: #1a1a1a;
+  text-align: left;
 }
 
 .header .contact-links {
@@ -163,15 +164,18 @@ ul.highlights li {
   font-size: 10pt;
 }
 
+.work-item ul.highlights,
 .project-item ul.highlights {
   padding-left: 14px;
 }
 
+.work-item ul.highlights li,
 .project-item ul.highlights li {
   position: relative;
   padding-left: 4px;
 }
 
+.work-item ul.highlights li::before,
 .project-item ul.highlights li::before {
   content: "-";
   position: absolute;
