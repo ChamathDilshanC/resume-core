@@ -117,10 +117,22 @@ a {
   flex-wrap: wrap;
 }
 
+.item-role {
+  font-size: 11pt;
+  font-weight: 700;
+  color: #111827;
+}
+
 .item-title {
   font-size: 11pt;
   font-weight: 700;
   color: #1d4ed8;
+}
+
+.item-description {
+  font-size: 10.2pt;
+  font-weight: 400;
+  color: #1a1a1a;
 }
 
 .item-dates {
@@ -142,12 +154,29 @@ a {
 
 ul.highlights {
   margin: 4px 0 0;
-  padding-left: 16px;
+  padding-left: 0;
+  list-style: none;
 }
 
 ul.highlights li {
   margin-bottom: 2px;
   font-size: 10pt;
+}
+
+.project-item ul.highlights {
+  padding-left: 14px;
+}
+
+.project-item ul.highlights li {
+  position: relative;
+  padding-left: 4px;
+}
+
+.project-item ul.highlights li::before {
+  content: "-";
+  position: absolute;
+  left: -14px;
+  color: #1a1a1a;
 }
 
 /* Simple lists: skills, certificates, education, references */

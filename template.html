@@ -48,7 +48,7 @@
     {{#each work}}
     <div class="work-item">
       <div class="item-header">
-        <span class="item-title">{{this.position}}{{#if this.name}} | {{#if this.url}}<a href="{{this.url}}">{{this.name}}</a>{{else}}{{this.name}}{{/if}}{{/if}}{{#if this.endDate}}{{#unless this.startDate}} | {{this.endDate}}{{/unless}}{{/if}}</span>
+        <span class="item-heading"><span class="item-role">{{this.position}}</span>{{#if this.name}} <span class="item-title">| {{#if this.url}}<a href="{{this.url}}">{{this.name}}</a>{{else}}{{this.name}}{{/if}}{{#if this.endDate}}{{#unless this.startDate}} | {{this.endDate}}{{/unless}}{{/if}}</span>{{/if}}</span>
         {{#if this.startDate}}<span class="item-dates">{{dateRange this.startDate this.endDate}}</span>{{/if}}
       </div>
       {{#if this.highlights.length}}
@@ -69,7 +69,7 @@
     {{#each projects}}
     <div class="project-item">
       <div class="item-header">
-        <span class="item-title">{{this.name}}{{#if this.description}} &mdash; {{this.description}}{{/if}}</span>
+        <span class="item-heading"><span class="item-role">{{this.name}}</span>{{#if this.description}} <span class="item-description">&mdash; {{this.description}}</span>{{/if}}</span>
       </div>
       {{#if this.links.length}}
       <div class="item-links">Project Link{{#if (gt this.links.length 1)}}s{{/if}}:
