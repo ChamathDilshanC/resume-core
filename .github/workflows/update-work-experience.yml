@@ -1,0 +1,76 @@
+name: Update Resume (Manual Work Experience)
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: resume-core-update
+  cancel-in-progress: false
+
+jobs:
+  update-work-experience:
+    if: contains(github.event.issue.labels.*.name, 'work-experience')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout resume-core
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Parse issue form body
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: node scripts/parse-issue.js
+
+      - name: Generate AI resume bullet points
+        env:
+          AI_API_KEY: ${{ secrets.AI_API_KEY }}
+          AI_PROVIDER: ${{ vars.AI_PROVIDER }}
+          AI_API_URL: ${{ vars.AI_API_URL }}
+          AI_MODEL: ${{ vars.AI_MODEL }}
+          PROMPT_MODE: work
+        run: node scripts/generate-bullets.js
+
+      - name: Merge work experience into resume.json
+        run: node scripts/merge-work.js
+
+      - name: Generate resume.pdf
+        run: node generate-pdf.js
+
+      - name: Commit and push updated resume
+        run: |
+          git config user.name "Chamath Dilshan"
+          git config user.email "chamathdilshan.dev@gmail.com"
+          git add resume.json resume.pdf
+          git diff --cached --quiet && echo "No changes to commit." && exit 0
+          git commit -m "feat: add ${{ env.ISSUE_POSITION }} at ${{ env.ISSUE_COMPANY }} to resume"
+          git push
+
+      - name: Close issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: "Resume updated and PDF regenerated. Closing this issue.",
+            });
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              state: "closed",
+            });
