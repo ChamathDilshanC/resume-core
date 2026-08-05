@@ -96,6 +96,8 @@ a {
   text-transform: uppercase;
   letter-spacing: 0.3px;
   color: #111827;
+  break-after: avoid-page;
+  page-break-after: avoid;
   border-bottom: 1.4px solid #1a1a1a;
   padding-bottom: 3px;
   margin-bottom: 7px;
