@@ -55,6 +55,9 @@ jobs:
           REPO_URL: ${{ steps.repo_data.outputs.repo_url }}
         run: node scripts/merge-project.js
 
+      - name: Install Calibri-compatible font (Carlito)
+        run: sudo apt-get update && sudo apt-get install -y fonts-crosextra-carlito
+
       - name: Generate resume.pdf
         run: node generate-pdf.js
 

@@ -44,9 +44,9 @@
 
   {{#if work.length}}
   <div class="section">
-    <div class="section-title">Work Experience</div>
     {{#each work}}
     <div class="work-item">
+      {{#if @first}}<div class="section-title">Work Experience</div>{{/if}}
       <div class="item-header">
         <span class="item-heading"><span class="item-role">{{this.position}}</span>{{#if this.name}} <span class="item-title">| {{#if this.url}}<a href="{{this.url}}">{{this.name}}</a>{{else}}{{this.name}}{{/if}}{{#if this.endDate}}{{#unless this.startDate}} | {{this.endDate}}{{/unless}}{{/if}}</span>{{/if}}</span>
         {{#if this.startDate}}<span class="item-dates">{{dateRange this.startDate this.endDate}}</span>{{/if}}
@@ -65,9 +65,9 @@
 
   {{#if projects.length}}
   <div class="section">
-    <div class="section-title">Key Projects</div>
     {{#each projects}}
     <div class="project-item">
+      {{#if @first}}<div class="section-title">Key Projects</div>{{/if}}
       <div class="item-header">
         <span class="item-heading"><span class="item-role">{{this.name}}</span>{{#if this.description}} <span class="item-description">&mdash; {{this.description}}</span>{{/if}}</span>
       </div>
