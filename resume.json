@@ -164,45 +164,6 @@
       "links": [{ "label": "Main-DocMind-AI", "url": "https://github.com/ChamathDilshanC/Main-DocMind-AI" }]
     },
     {
-      "name": "Cafeteria-System-Main",
-      "description": "",
-      "highlights": [
-        "Engineered a responsive cafeteria management web application using Vue and JavaScript to facilitate real-time menu updates, item customization, and efficient order tracking.",
-        "Architected interactive user interfaces with dynamic Vue components, leveraging semantic HTML and custom CSS to create an intuitive and accessible experience across all devices."
-      ],
-      "links": [{ "label": "Cafeteria-System-Main", "url": "https://github.com/ChamathDilshanC/Cafeteria-System-Main" }]
-    },
-    {
-      "name": "FinFlow-Mobile-Application-Main-Repo",
-      "description": "FinFlow umbrella (submodules: frontend + backend)",
-      "highlights": [
-        "Architected the FinFlow umbrella platform by configuring submodules to seamlessly unify separate frontend and backend repositories.",
-        "Engineered dynamic server-rendered web views using Python and Mako templates to streamline full-stack data flow and backend integration.",
-        "Developed responsive client-side application components using TypeScript, JavaScript, and custom CSS to deliver a cohesive mobile user experience."
-      ],
-      "links": [{ "label": "FinFlow-Mobile-Application-Main-Repo", "url": "https://github.com/ChamathDilshanC/FinFlow-Mobile-Application-Main-Repo" }]
-    },
-    {
-      "name": "RevvUp-Main-Application",
-      "description": "RevvUp premium multi-showroom motorbike marketplace | RevvUp — main app (frontend + backend submodules)",
-      "highlights": [
-        "Engineered a multi-showroom motorbike marketplace using TypeScript, JavaScript, and CSS to deliver responsive, interactive user interfaces across complex catalog workflows.",
-        "Developed modular backend application services and data integration components utilizing Python within a structured submodule architecture.",
-        "Automated build execution, repository submodule synchronization, and environment setup tasks using PowerShell scripts to streamline deployment pipelines."
-      ],
-      "links": [{ "label": "RevvUp-Main-Application", "url": "https://github.com/ChamathDilshanC/RevvUp-Main-Application" }]
-    },
-    {
-      "name": "VibeNet-Main",
-      "description": "VibeNet monorepo — architecture docs, AWS setup guide, and frontend/backend git submodules.",
-      "highlights": [
-        "Architected a unified monorepo infrastructure leveraging Git submodules to seamlessly integrate Go backend services with TypeScript, JavaScript, HTML, and CSS web modules.",
-        "Engineered detailed system architecture documentation and cloud setup guides for AWS to standardize deployment and configuration pipelines across full-stack services.",
-        "Orchestrated cross-repository integration workflows to streamline collaborative development between client-side interfaces built with TypeScript/JavaScript and server-side logic in Go."
-      ],
-      "links": [{ "label": "VibeNet-Main", "url": "https://github.com/ChamathDilshanC/VibeNet-Main" }]
-    },
-    {
       "name": "VibeNet",
       "description": "Secure Real-Time End-to-End Encrypted Chat Platform",
       "highlights": [
