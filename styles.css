@@ -15,7 +15,7 @@ body {
 
 body {
   font-family: Calibri, Carlito, Arial, "Helvetica Neue", Helvetica, sans-serif;
-  font-size: 10.5pt;
+  font-size: 10pt;
   line-height: 1.4;
   color: #1a1a1a;
   -webkit-print-color-adjust: exact;
@@ -47,7 +47,7 @@ a {
 }
 
 .header .name {
-  font-size: 24pt;
+  font-size: 15pt;
   font-weight: 700;
   letter-spacing: 0.3px;
   margin: 0;
@@ -55,7 +55,7 @@ a {
 }
 
 .header .label {
-  font-size: 12.5pt;
+  font-size: 12pt;
   font-weight: 700;
   color: #1a1a1a;
   margin: 2px 0 6px;
@@ -70,6 +70,7 @@ a {
 
 .header .contact-links {
   margin-top: 2px;
+  text-align: center;
 }
 
 .header .contact span {

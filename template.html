@@ -19,7 +19,7 @@
     <div class="contact contact-links">
       {{#if basics.url}}<span>Portfolio: <a href="{{basics.url}}">{{stripProtocol basics.url}}</a></span>{{/if}}
       {{#each basics.profiles}}
-        <span>&bull; {{this.network}}: {{#if this.url}}<a href="{{this.url}}">{{this.username}}</a>{{else}}{{this.username}}{{/if}}</span>
+        <span>| {{this.network}}: {{#if this.url}}<a href="{{this.url}}">{{this.username}}</a>{{else}}{{this.username}}{{/if}}</span>
       {{/each}}
     </div>
   </div>
