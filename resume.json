@@ -154,6 +154,16 @@
   ],
   "projects": [
     {
+      "name": "FinFlow-Mobile-Application-Main-Repo",
+      "description": "FinFlow umbrella (submodules: frontend + backend)",
+      "highlights": [
+        "Architected the FinFlow umbrella platform by configuring submodules to seamlessly unify separate frontend and backend repositories.",
+        "Engineered dynamic server-rendered web views using Python and Mako templates to streamline full-stack data flow and backend integration.",
+        "Developed responsive client-side application components using TypeScript, JavaScript, and custom CSS to deliver a cohesive mobile user experience."
+      ],
+      "url": "https://github.com/ChamathDilshanC/FinFlow-Mobile-Application-Main-Repo"
+    },
+    {
       "name": "RevvUp-Main-Application",
       "description": "RevvUp premium multi-showroom motorbike marketplace | RevvUp — main app (frontend + backend submodules)",
       "highlights": [
