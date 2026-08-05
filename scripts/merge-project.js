@@ -13,11 +13,12 @@ async function main() {
   const resume = await fs.readJson(resumeJsonPath);
   const highlights = await fs.readJson(bulletsPath);
 
+  const repoUrl = process.env.REPO_URL || "";
   const projectEntry = {
     name: repoName,
     description: process.env.REPO_DESCRIPTION || "",
     highlights,
-    url: process.env.REPO_URL || "",
+    links: repoUrl ? [{ label: repoName, url: repoUrl }] : [],
   };
 
   resume.projects = resume.projects || [];

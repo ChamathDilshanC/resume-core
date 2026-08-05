@@ -14,21 +14,20 @@ Handlebars.registerHelper("joinList", function (list) {
   return list.join(", ");
 });
 
-Handlebars.registerHelper("splitPipe", function (value) {
-  if (!value) return "";
-  return value
-    .split("|")
-    .map((part) => part.trim())
-    .filter(Boolean)
-    .join(" &bull; ");
-});
-
 Handlebars.registerHelper("dateRange", function (startDate, endDate) {
   const start = (startDate || "").trim();
   const end = (endDate || "").trim();
   if (!start && !end) return "";
   if (start && end) return `${start} - ${end}`;
   return start || end;
+});
+
+Handlebars.registerHelper("stripProtocol", function (url) {
+  return (url || "").replace(/^https?:\/\//i, "").replace(/\/$/, "");
+});
+
+Handlebars.registerHelper("gt", function (a, b) {
+  return a > b;
 });
 
 async function generateResumePdf() {

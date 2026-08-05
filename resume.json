@@ -161,7 +161,7 @@
         "Engineered a Retrieval-Augmented Generation (RAG) pipeline using Python, FastAPI, LangChain, and Qdrant to perform semantic document search and generate precise, context-aware AI responses.",
         "Orchestrated local development infrastructure using Docker and Docker Compose to streamline multi-container setup, database management, and end-to-end local testing workflows."
       ],
-      "url": "https://github.com/ChamathDilshanC/Main-DocMind-AI"
+      "links": [{ "label": "Main-DocMind-AI", "url": "https://github.com/ChamathDilshanC/Main-DocMind-AI" }]
     },
     {
       "name": "Cafeteria-System-Main",
@@ -170,7 +170,7 @@
         "Engineered a responsive cafeteria management web application using Vue and JavaScript to facilitate real-time menu updates, item customization, and efficient order tracking.",
         "Architected interactive user interfaces with dynamic Vue components, leveraging semantic HTML and custom CSS to create an intuitive and accessible experience across all devices."
       ],
-      "url": "https://github.com/ChamathDilshanC/Cafeteria-System-Main"
+      "links": [{ "label": "Cafeteria-System-Main", "url": "https://github.com/ChamathDilshanC/Cafeteria-System-Main" }]
     },
     {
       "name": "FinFlow-Mobile-Application-Main-Repo",
@@ -180,7 +180,7 @@
         "Engineered dynamic server-rendered web views using Python and Mako templates to streamline full-stack data flow and backend integration.",
         "Developed responsive client-side application components using TypeScript, JavaScript, and custom CSS to deliver a cohesive mobile user experience."
       ],
-      "url": "https://github.com/ChamathDilshanC/FinFlow-Mobile-Application-Main-Repo"
+      "links": [{ "label": "FinFlow-Mobile-Application-Main-Repo", "url": "https://github.com/ChamathDilshanC/FinFlow-Mobile-Application-Main-Repo" }]
     },
     {
       "name": "RevvUp-Main-Application",
@@ -190,7 +190,7 @@
         "Developed modular backend application services and data integration components utilizing Python within a structured submodule architecture.",
         "Automated build execution, repository submodule synchronization, and environment setup tasks using PowerShell scripts to streamline deployment pipelines."
       ],
-      "url": "https://github.com/ChamathDilshanC/RevvUp-Main-Application"
+      "links": [{ "label": "RevvUp-Main-Application", "url": "https://github.com/ChamathDilshanC/RevvUp-Main-Application" }]
     },
     {
       "name": "VibeNet-Main",
@@ -200,7 +200,7 @@
         "Engineered detailed system architecture documentation and cloud setup guides for AWS to standardize deployment and configuration pipelines across full-stack services.",
         "Orchestrated cross-repository integration workflows to streamline collaborative development between client-side interfaces built with TypeScript/JavaScript and server-side logic in Go."
       ],
-      "url": "https://github.com/ChamathDilshanC/VibeNet-Main"
+      "links": [{ "label": "VibeNet-Main", "url": "https://github.com/ChamathDilshanC/VibeNet-Main" }]
     },
     {
       "name": "VibeNet",
@@ -210,7 +210,7 @@
         "Backend: Developed a Go backend with WebSocket-based real-time messaging and DynamoDB/PostgreSQL for data storage, deployed on AWS EC2 with automated CI/CD pipelines.",
         "Architected the system as a multi-repository monorepo with Git submodules, comprehensive architecture documentation, and an AWS infrastructure setup guide."
       ],
-      "url": "VibeNet Monorepo"
+      "links": [{ "label": "VibeNet Monorepo", "url": "https://github.com/ChamathDilshanC/VibeNet-Main" }]
     },
     {
       "name": "RevvUp",
@@ -219,7 +219,11 @@
         "Built a premium multi-showroom motorbike marketplace with a React Native (Expo) client and a FastAPI backend deployed serverless on Vercel.",
         "Integrated Supabase for authentication, data storage, and Google sign-in, and automated Android release builds with GitHub Actions."
       ],
-      "url": "Main Application | Backend API | Frontend CI/CD"
+      "links": [
+        { "label": "Main Application", "url": "https://github.com/ChamathDilshanC/RevvUp-Main-Application" },
+        { "label": "Backend API", "url": "https://github.com/ChamathDilshanC/Revvup-backend" },
+        { "label": "Frontend CI/CD", "url": "https://github.com/ChamathDilshanC/Revvup-frontend-CICD" }
+      ]
     },
     {
       "name": "FinFlow",
@@ -228,7 +232,10 @@
         "Developed a cross-platform personal finance app (React Native, Expo, NativeWind) with Google authentication and a real-time expense tracking UI.",
         "Built an async FastAPI backend with SQLAlchemy, Alembic migrations, PostgreSQL, and JWT-secured REST endpoints, documented with Swagger."
       ],
-      "url": "Frontend | Backend"
+      "links": [
+        { "label": "Frontend", "url": "https://github.com/ChamathDilshanC/FinFlow-Frontend" },
+        { "label": "Backend", "url": "https://github.com/ChamathDilshanC/FinFlow-Backend" }
+      ]
     },
     {
       "name": "Nexa G Bucket Manager",
@@ -237,7 +244,11 @@
         "Built a GCP-backed private/public cloud file manager (React Native/Expo, FastAPI, Supabase, Google Cloud Storage).",
         "Automated Android APK builds and releases with GitHub Actions, including secrets injection and versioned release publishing."
       ],
-      "url": "Mobile App Frontend CI/CD Backend"
+      "links": [
+        { "label": "Mobile App", "url": "https://github.com/ChamathDilshanC/Nexa-G-Bucket-Manager-Mobileapp--CICD" },
+        { "label": "Frontend CI/CD", "url": "https://github.com/ChamathDilshanC/Nexa-G-Bucket-Manager-frontend---CICD" },
+        { "label": "Backend", "url": "https://github.com/ChamathDilshanC/Nexa-G-Bucket-Manager-backend" }
+      ]
     },
     {
       "name": "Distributed Microservices Architecture",
@@ -246,7 +257,12 @@
         "Engineered a scalable microservices platform using Spring Cloud with API Gateway, Config Server, and Eureka Service Registry.",
         "Developed loosely coupled services (User, Menu, Order, Kitchen) with centralized Git-based configuration and Docker Compose infrastructure (PostgreSQL, MongoDB)."
       ],
-      "url": "Main Repository | Configurations | Platform | Services"
+      "links": [
+        { "label": "Main Repository", "url": "https://github.com/ChamathDilshanC/Cafeteria-System-Main" },
+        { "label": "Configurations", "url": "https://github.com/ChamathDilshanC/Cafeteria-System-Configurations" },
+        { "label": "Platform", "url": "https://github.com/ChamathDilshanC/Cafeteria-System-Platform" },
+        { "label": "Services", "url": "https://github.com/ChamathDilshanC/Cafeteria-System-Services" }
+      ]
     },
     {
       "name": "JobMail",
@@ -255,7 +271,10 @@
         "Built a Next.js application for generating and sending professional job application emails with real-time preview and multiple templates.",
         "Integrated Firebase Authentication, Gmail API (OAuth + attachments), and Outlook mailto workflows; deployed live at jobemail.me."
       ],
-      "url": "Live App GitHub Repository"
+      "links": [
+        { "label": "Live App", "url": "https://jobemail.me" },
+        { "label": "GitHub Repository", "url": "https://github.com/ChamathDilshanC/Job_Email_Generator---Sender-Gmail-Outlook" }
+      ]
     },
     {
       "name": "SpendSight",
@@ -263,7 +282,7 @@
       "highlights": [
         "Built a cross-platform React Native finance app with NativeWind and Firebase for expense tracking, account management, and secure authentication."
       ],
-      "url": "SpendSight Mobile Application"
+      "links": [{ "label": "SpendSight Mobile Application", "url": "https://github.com/ChamathDilshanC/SpendSight-MobileApplication" }]
     },
     {
       "name": "TaskFlow",
@@ -271,7 +290,7 @@
       "highlights": [
         "Built a modern authentication system with Laravel 12 and Tailwind CSS, featuring custom sign-up/sign-in pages and a polished UI, deployed on Railway."
       ],
-      "url": "Laravel Auth Demo App"
+      "links": [{ "label": "Laravel Auth Demo App", "url": "https://github.com/ChamathDilshanC/Laravel_Auth_Demo_App---TaskFlow" }]
     },
     {
       "name": "PowerAlert",
@@ -279,7 +298,10 @@
       "highlights": [
         "Built a full-stack utility monitoring platform with RESTful APIs, JWT-based access control, and responsive real-time monitoring workflows."
       ],
-      "url": "Frontend | Backend"
+      "links": [
+        { "label": "Frontend", "url": "https://github.com/ChamathDilshanC/Power-Alert-System-Frontend" },
+        { "label": "Backend", "url": "https://github.com/ChamathDilshanC/Power-Alert-System-Backend" }
+      ]
     },
     {
       "name": "Ceylonic & create-stack-cli",
@@ -288,7 +310,10 @@
         "create-stack-cli: Built a universal, interactive CLI scaffolder for React, Vue, Angular, and Vanilla JS projects with optional TypeScript, Tailwind CSS, ESLint, and Prettier integration, published as an open-source npm package.",
         "ceylonic: Developed a zero-dependency TypeScript utility library for Sri Lanka-specific data NIC parsing/validation plus Sinhala date, currency, and number formatting published as an npm package under the MIT license."
       ],
-      "url": "create-stack-cli | ceylonic"
+      "links": [
+        { "label": "create-stack-cli", "url": "https://github.com/ChamathDilshanC/create-stack-cli" },
+        { "label": "ceylonic", "url": "https://github.com/ChamathDilshanC/ceylonic" }
+      ]
     },
     {
       "name": "GCP Cloud Storage APIs and Cloud-Based Applications",
@@ -297,7 +322,10 @@
         "Built a Spring Boot REST API migrating local file storage to Google Cloud Storage with multi-environment deployment profiles.",
         "Developed a Vue.js student management system backed by GCP Cloud SQL (PostgreSQL) and Cloud Functions."
       ],
-      "url": "Image Cloud Storage API | Student Management Cloud App"
+      "links": [
+        { "label": "Image Cloud Storage API", "url": "https://github.com/ChamathDilshanC/Image-Cloud-Storage-Google-Cloud-Provider" },
+        { "label": "Student Management Cloud App", "url": "https://github.com/ChamathDilshanC/Student-Management-Cloud-Based-Application" }
+      ]
     }
   ],
   "certificates": [

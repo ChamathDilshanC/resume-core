@@ -3,35 +3,53 @@
 <head>
 <meta charset="utf-8" />
 <title>{{basics.name}} - Resume</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <style>{{{styles}}}</style>
 </head>
 <body>
 
   <div class="header">
+    {{#if basics.image}}<img class="avatar" src="{{basics.image}}" alt="{{basics.name}}" />{{/if}}
     <h1 class="name">{{basics.name}}</h1>
     <p class="label">{{basics.label}}</p>
     <div class="contact">
-      {{#if basics.email}}<span>{{basics.email}}</span>{{/if}}
+      {{#if basics.location.city}}<span>{{basics.location.city}}, Sri Lanka</span>{{/if}}
       {{#if basics.phone}}<span>&bull; {{basics.phone}}</span>{{/if}}
-      {{#if basics.url}}<span>&bull; <a href="{{basics.url}}">{{basics.url}}</a></span>{{/if}}
-      {{#each basics.profiles}}
-        <span>&bull; <a href="{{this.url}}">{{this.network}}{{#if this.username}}/{{this.username}}{{/if}}</a></span>
-      {{/each}}
-      {{#if basics.location.city}}<span>&bull; {{basics.location.city}}, {{basics.location.countryCode}}</span>{{/if}}
+      {{#if basics.email}}<span>&bull; {{basics.email}}</span>{{/if}}
     </div>
-    {{#if basics.summary}}<p class="summary">{{basics.summary}}</p>{{/if}}
+    <div class="contact contact-links">
+      {{#if basics.url}}<span>Portfolio: <a href="{{basics.url}}">{{stripProtocol basics.url}}</a></span>{{/if}}
+      {{#each basics.profiles}}
+        <span>&bull; {{this.network}}: {{#if this.url}}<a href="{{this.url}}">{{this.username}}</a>{{else}}{{this.username}}{{/if}}</span>
+      {{/each}}
+    </div>
   </div>
+
+  {{#if basics.summary}}
+  <div class="section">
+    <div class="section-title">Professional Summary</div>
+    <p class="summary">{{basics.summary}}</p>
+  </div>
+  {{/if}}
+
+  {{#if skills.length}}
+  <div class="section">
+    <div class="section-title">Technical Skills</div>
+    <ul class="simple-list">
+      {{#each skills}}
+      <li><b>{{this.name}}:</b> {{joinList this.keywords}}</li>
+      {{/each}}
+    </ul>
+  </div>
+  {{/if}}
 
   {{#if work.length}}
   <div class="section">
-    <div class="section-title">Experience</div>
+    <div class="section-title">Work Experience</div>
     {{#each work}}
     <div class="work-item">
       <div class="item-header">
-        <span class="item-title">{{this.position}}{{#if this.name}} &mdash; {{this.name}}{{/if}}</span>
-        {{#if (dateRange this.startDate this.endDate)}}<span class="item-dates">{{dateRange this.startDate this.endDate}}</span>{{/if}}
+        <span class="item-title">{{this.position}}{{#if this.name}} | {{#if this.url}}<a href="{{this.url}}">{{this.name}}</a>{{else}}{{this.name}}{{/if}}{{/if}}{{#if this.endDate}}{{#unless this.startDate}} | {{this.endDate}}{{/unless}}{{/if}}</span>
+        {{#if this.startDate}}<span class="item-dates">{{dateRange this.startDate this.endDate}}</span>{{/if}}
       </div>
       {{#if this.highlights.length}}
       <ul class="highlights">
@@ -47,13 +65,17 @@
 
   {{#if projects.length}}
   <div class="section">
-    <div class="section-title">Projects</div>
+    <div class="section-title">Key Projects</div>
     {{#each projects}}
     <div class="project-item">
       <div class="item-header">
-        <span class="item-title">{{this.name}}{{#if this.description}} &mdash; <span class="item-subtitle">{{this.description}}</span>{{/if}}</span>
+        <span class="item-title">{{this.name}}{{#if this.description}} &mdash; {{this.description}}{{/if}}</span>
       </div>
-      {{#if this.url}}<div class="item-links">{{splitPipe this.url}}</div>{{/if}}
+      {{#if this.links.length}}
+      <div class="item-links">Project Link{{#if (gt this.links.length 1)}}s{{/if}}:
+        {{#each this.links}}{{#unless @first}} | {{/unless}}<a href="{{this.url}}">{{this.label}}</a>{{/each}}
+      </div>
+      {{/if}}
       {{#if this.highlights.length}}
       <ul class="highlights">
         {{#each this.highlights}}
@@ -66,38 +88,23 @@
   </div>
   {{/if}}
 
-  {{#if skills.length}}
+  {{#if certificates.length}}
   <div class="section">
-    <div class="section-title">Skills</div>
-    <div class="skills-list">
-      {{#each skills}}
-      <div class="skill-row"><b>{{this.name}}:</b> {{joinList this.keywords}}</div>
+    <div class="section-title">Certifications</div>
+    <ul class="simple-list">
+      {{#each certificates}}
+      <li>{{#if this.url}}<a href="{{this.url}}">{{this.name}}</a>{{else}}{{this.name}}{{/if}}{{#if this.issuer}} &mdash; {{this.issuer}}{{/if}}{{#if this.date}} ({{this.date}}){{/if}}</li>
       {{/each}}
-    </div>
+    </ul>
   </div>
   {{/if}}
 
   {{#if education.length}}
   <div class="section">
     <div class="section-title">Education</div>
-    {{#each education}}
-    <div class="education-item">
-      <div class="item-header">
-        <span class="item-title">{{this.institution}}</span>
-        {{#if (dateRange this.startDate this.endDate)}}<span class="item-dates">{{dateRange this.startDate this.endDate}}</span>{{/if}}
-      </div>
-      {{#if this.studyType}}<div class="item-subtitle">{{this.studyType}}{{#if this.area}}, {{this.area}}{{/if}}</div>{{/if}}
-    </div>
-    {{/each}}
-  </div>
-  {{/if}}
-
-  {{#if certificates.length}}
-  <div class="section">
-    <div class="section-title">Certificates</div>
     <ul class="simple-list">
-      {{#each certificates}}
-      <li><b>{{this.name}}</b>{{#if this.issuer}} &mdash; {{this.issuer}}{{/if}}{{#if this.date}} ({{this.date}}){{/if}}</li>
+      {{#each education}}
+      <li>{{this.studyType}}{{#if this.area}} in {{this.area}}{{/if}} | {{this.institution}}{{#if (dateRange this.startDate this.endDate)}} | {{dateRange this.startDate this.endDate}}{{/if}}</li>
       {{/each}}
     </ul>
   </div>
@@ -108,7 +115,7 @@
     <div class="section-title">References</div>
     <ul class="simple-list">
       {{#each references}}
-      <li><b>{{this.name}}</b> &mdash; {{this.reference}}</li>
+      <li>{{this.name}} | {{this.reference}}</li>
       {{/each}}
     </ul>
   </div>
