@@ -73,40 +73,96 @@
     {
       "name": "Languages",
       "level": "",
-      "keywords": ["Java", "Python", "JavaScript", "TypeScript", "PHP", "Bash"]
+      "keywords": [
+        "Java",
+        "Python",
+        "JavaScript",
+        "TypeScript",
+        "PHP",
+        "Bash"
+      ]
     },
     {
       "name": "Frameworks",
       "level": "",
-      "keywords": ["Spring Boot", "Spring Cloud", "FastAPI", "React", "React Native", "Node.js", "Vue.js", "Next.js", "Laravel", "Electron"]
+      "keywords": [
+        "Spring Boot",
+        "Spring Cloud",
+        "FastAPI",
+        "React",
+        "React Native",
+        "Node.js",
+        "Vue.js",
+        "Next.js",
+        "Laravel",
+        "Electron"
+      ]
     },
     {
       "name": "Databases",
       "level": "",
-      "keywords": ["MySQL", "PostgreSQL", "MongoDB", "Supabase"]
+      "keywords": [
+        "MySQL",
+        "PostgreSQL",
+        "MongoDB",
+        "Supabase"
+      ]
     },
     {
       "name": "APIs and Architecture",
       "level": "",
-      "keywords": ["RESTful APIs", "Microservices", "JWT/OAuth", "API Gateway", "Eureka Service Registry"]
+      "keywords": [
+        "RESTful APIs",
+        "Microservices",
+        "JWT/OAuth",
+        "API Gateway",
+        "Eureka Service Registry"
+      ]
     },
     {
       "name": "Mobile",
       "level": "",
-      "keywords": ["React Native", "Flutter", "Expo", "NativeWind"]
+      "keywords": [
+        "React Native",
+        "Flutter",
+        "Expo",
+        "NativeWind"
+      ]
     },
     {
       "name": "Cloud and DevOps",
       "level": "",
-      "keywords": ["AWS", "GCP", "Azure", "Docker", "Docker Compose", "GitHub Actions CI/CD"]
+      "keywords": [
+        "AWS",
+        "GCP",
+        "Azure",
+        "Docker",
+        "Docker Compose",
+        "GitHub Actions CI/CD"
+      ]
     },
     {
       "name": "Tools",
       "level": "",
-      "keywords": ["Git", "GitHub", "Postman", "Figma"]
+      "keywords": [
+        "Git",
+        "GitHub",
+        "Postman",
+        "Figma"
+      ]
     }
   ],
   "projects": [
+    {
+      "name": "VibeNet-Main",
+      "description": "VibeNet monorepo — architecture docs, AWS setup guide, and frontend/backend git submodules.",
+      "highlights": [
+        "Architected a unified monorepo infrastructure leveraging Git submodules to seamlessly integrate Go backend services with TypeScript, JavaScript, HTML, and CSS web modules.",
+        "Engineered detailed system architecture documentation and cloud setup guides for AWS to standardize deployment and configuration pipelines across full-stack services.",
+        "Orchestrated cross-repository integration workflows to streamline collaborative development between client-side interfaces built with TypeScript/JavaScript and server-side logic in Go."
+      ],
+      "url": "https://github.com/ChamathDilshanC/VibeNet-Main"
+    },
     {
       "name": "VibeNet",
       "description": "Secure Real-Time End-to-End Encrypted Chat Platform",
