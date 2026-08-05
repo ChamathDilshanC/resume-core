@@ -1,0 +1,35 @@
+name: Regenerate Resume PDF
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: resume-core-update
+  cancel-in-progress: false
+
+jobs:
+  regenerate-pdf:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout resume-core
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate resume.pdf
+        run: node generate-pdf.js
+
+      - name: Commit and push updated resume.pdf
+        env:
+          COMMIT_MESSAGE: "chore: regenerate resume.pdf"
+        run: bash scripts/commit-and-push.sh
