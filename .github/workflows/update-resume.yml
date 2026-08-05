@@ -1,0 +1,68 @@
+name: Update Resume (Project Automation)
+
+on:
+  repository_dispatch:
+    types: [resume_update]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: resume-core-update
+  cancel-in-progress: false
+
+jobs:
+  update-resume:
+    runs-on: ubuntu-latest
+    env:
+      SOURCE_REPO_OWNER: ${{ github.event.client_payload.repo_owner }}
+      SOURCE_REPO_NAME: ${{ github.event.client_payload.repo_name }}
+    steps:
+      - name: Checkout resume-core
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Fetch source repo data (details, languages, submodules)
+        id: repo_data
+        env:
+          GITHUB_TOKEN: ${{ secrets.RESUME_CORE_PAT || secrets.GITHUB_TOKEN }}
+        run: node scripts/fetch-repo-data.js
+
+      - name: Generate AI resume bullet points
+        env:
+          AI_API_KEY: ${{ secrets.AI_API_KEY }}
+          AI_PROVIDER: ${{ vars.AI_PROVIDER }}
+          AI_API_URL: ${{ vars.AI_API_URL }}
+          AI_MODEL: ${{ vars.AI_MODEL }}
+          PROMPT_MODE: project
+          REPO_NAME: ${{ steps.repo_data.outputs.repo_name }}
+          REPO_DESCRIPTION: ${{ steps.repo_data.outputs.repo_description }}
+          TECH_STACK: ${{ steps.repo_data.outputs.tech_stack }}
+        run: node scripts/generate-bullets.js
+
+      - name: Merge project into resume.json
+        env:
+          REPO_NAME: ${{ steps.repo_data.outputs.repo_name }}
+          REPO_DESCRIPTION: ${{ steps.repo_data.outputs.repo_description }}
+          REPO_URL: ${{ steps.repo_data.outputs.repo_url }}
+        run: node scripts/merge-project.js
+
+      - name: Generate resume.pdf
+        run: node generate-pdf.js
+
+      - name: Commit and push updated resume
+        run: |
+          git config user.name "Chamath Dilshan"
+          git config user.email "chamathdilshan.dev@gmail.com"
+          git add resume.json resume.pdf
+          git diff --cached --quiet && echo "No changes to commit." && exit 0
+          git commit -m "feat: add ${{ steps.repo_data.outputs.repo_name }} project to resume"
+          git push
