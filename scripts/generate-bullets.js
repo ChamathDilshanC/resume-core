@@ -100,7 +100,7 @@ async function callGithubModels(systemPrompt, userPrompt) {
 }
 
 async function callGemini(systemPrompt, userPrompt) {
-  const model = process.env.AI_MODEL || "gemini-2.5-flash";
+  const model = process.env.AI_MODEL || "gemini-flash-latest";
   const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${process.env.AI_API_KEY}`;
 
   const response = await fetch(apiUrl, {
