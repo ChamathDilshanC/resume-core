@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>{{basics.name}} - Resume</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>{{{styles}}}</style>
+</head>
+<body>
+
+  <div class="header">
+    <h1 class="name">{{basics.name}}</h1>
+    <p class="label">{{basics.label}}</p>
+    <div class="contact">
+      {{#if basics.email}}<span>{{basics.email}}</span>{{/if}}
+      {{#if basics.phone}}<span>&bull; {{basics.phone}}</span>{{/if}}
+      {{#if basics.url}}<span>&bull; <a href="{{basics.url}}">{{basics.url}}</a></span>{{/if}}
+      {{#each basics.profiles}}
+        <span>&bull; <a href="{{this.url}}">{{this.network}}{{#if this.username}}/{{this.username}}{{/if}}</a></span>
+      {{/each}}
+      {{#if basics.location.city}}<span>&bull; {{basics.location.city}}, {{basics.location.countryCode}}</span>{{/if}}
+    </div>
+    {{#if basics.summary}}<p class="summary">{{basics.summary}}</p>{{/if}}
+  </div>
+
+  {{#if work.length}}
+  <div class="section">
+    <div class="section-title">Experience</div>
+    {{#each work}}
+    <div class="work-item">
+      <div class="item-header">
+        <span class="item-title">{{this.position}}{{#if this.name}} &mdash; {{this.name}}{{/if}}</span>
+        {{#if (dateRange this.startDate this.endDate)}}<span class="item-dates">{{dateRange this.startDate this.endDate}}</span>{{/if}}
+      </div>
+      {{#if this.highlights.length}}
+      <ul class="highlights">
+        {{#each this.highlights}}
+        <li>{{this}}</li>
+        {{/each}}
+      </ul>
+      {{/if}}
+    </div>
+    {{/each}}
+  </div>
+  {{/if}}
+
+  {{#if projects.length}}
+  <div class="section">
+    <div class="section-title">Projects</div>
+    {{#each projects}}
+    <div class="project-item">
+      <div class="item-header">
+        <span class="item-title">{{this.name}}{{#if this.description}} &mdash; <span class="item-subtitle">{{this.description}}</span>{{/if}}</span>
+      </div>
+      {{#if this.url}}<div class="item-links">{{splitPipe this.url}}</div>{{/if}}
+      {{#if this.highlights.length}}
+      <ul class="highlights">
+        {{#each this.highlights}}
+        <li>{{this}}</li>
+        {{/each}}
+      </ul>
+      {{/if}}
+    </div>
+    {{/each}}
+  </div>
+  {{/if}}
+
+  {{#if skills.length}}
+  <div class="section">
+    <div class="section-title">Skills</div>
+    <div class="skills-list">
+      {{#each skills}}
+      <div class="skill-row"><b>{{this.name}}:</b> {{joinList this.keywords}}</div>
+      {{/each}}
+    </div>
+  </div>
+  {{/if}}
+
+  {{#if education.length}}
+  <div class="section">
+    <div class="section-title">Education</div>
+    {{#each education}}
+    <div class="education-item">
+      <div class="item-header">
+        <span class="item-title">{{this.institution}}</span>
+        {{#if (dateRange this.startDate this.endDate)}}<span class="item-dates">{{dateRange this.startDate this.endDate}}</span>{{/if}}
+      </div>
+      {{#if this.studyType}}<div class="item-subtitle">{{this.studyType}}{{#if this.area}}, {{this.area}}{{/if}}</div>{{/if}}
+    </div>
+    {{/each}}
+  </div>
+  {{/if}}
+
+  {{#if certificates.length}}
+  <div class="section">
+    <div class="section-title">Certificates</div>
+    <ul class="simple-list">
+      {{#each certificates}}
+      <li><b>{{this.name}}</b>{{#if this.issuer}} &mdash; {{this.issuer}}{{/if}}{{#if this.date}} ({{this.date}}){{/if}}</li>
+      {{/each}}
+    </ul>
+  </div>
+  {{/if}}
+
+  {{#if references.length}}
+  <div class="section">
+    <div class="section-title">References</div>
+    <ul class="simple-list">
+      {{#each references}}
+      <li><b>{{this.name}}</b> &mdash; {{this.reference}}</li>
+      {{/each}}
+    </ul>
+  </div>
+  {{/if}}
+
+</body>
+</html>

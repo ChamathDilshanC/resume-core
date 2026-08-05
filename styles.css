@@ -1,0 +1,167 @@
+@page {
+  size: A4;
+  margin: 12mm 15mm;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+  font-size: 10pt;
+  line-height: 1.45;
+  color: #1f2937;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+a {
+  color: #1d4ed8;
+  text-decoration: none;
+}
+
+.section,
+.project-item,
+.work-item,
+.education-item {
+  page-break-inside: avoid;
+}
+
+/* Header */
+.header {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.header .name {
+  font-size: 26pt;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+.header .label {
+  font-size: 12pt;
+  font-weight: 500;
+  color: #4b5563;
+  margin: 2px 0 8px;
+}
+
+.header .contact {
+  font-size: 9.5pt;
+  color: #4b5563;
+}
+
+.header .contact span {
+  margin: 0 6px;
+}
+
+.header .contact span:first-child {
+  margin-left: 0;
+}
+
+.header .contact a {
+  color: #4b5563;
+}
+
+.header .summary {
+  font-size: 9.5pt;
+  color: #1f2937;
+  margin-top: 8px;
+  text-align: left;
+}
+
+/* Sections */
+.section {
+  margin-bottom: 14px;
+}
+
+.section-title {
+  font-size: 12.5pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1.2px solid #1f2937;
+  padding-bottom: 3px;
+  margin-bottom: 8px;
+}
+
+/* Work / Project items */
+.work-item,
+.project-item,
+.education-item {
+  margin-bottom: 10px;
+}
+
+.item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.item-title {
+  font-size: 11.5pt;
+  font-weight: 700;
+}
+
+.item-subtitle {
+  font-size: 10pt;
+  font-weight: 500;
+  color: #374151;
+}
+
+.item-dates {
+  font-size: 9.5pt;
+  color: #4b5563;
+  white-space: nowrap;
+}
+
+.item-links {
+  font-size: 9pt;
+  color: #4b5563;
+  margin-top: 1px;
+}
+
+ul.highlights {
+  margin: 4px 0 0;
+  padding-left: 14px;
+}
+
+ul.highlights li {
+  margin-bottom: 2px;
+  font-size: 9.8pt;
+}
+
+/* Skills */
+.skills-list {
+  margin: 0;
+  padding: 0;
+}
+
+.skill-row {
+  font-size: 9.8pt;
+  margin-bottom: 4px;
+}
+
+.skill-row b {
+  font-weight: 700;
+}
+
+/* Certificates / References */
+.simple-list {
+  margin: 0;
+  padding-left: 14px;
+}
+
+.simple-list li {
+  font-size: 9.8pt;
+  margin-bottom: 3px;
+}
