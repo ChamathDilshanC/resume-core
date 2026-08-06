@@ -1,12 +1,17 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+TARGET_DIR="${1:?usage: commit-and-push.sh <dir> <file...>}"
+shift
+FILES=("$@")
+
+cd "$TARGET_DIR"
 git config user.name "Chamath Dilshan"
 git config user.email "chamathdilshan.dev@gmail.com"
-git add resume.json resume.pdf
+git add "${FILES[@]}"
 
 if git diff --cached --quiet; then
-  echo "No changes to commit."
+  echo "No changes to commit in $TARGET_DIR."
   exit 0
 fi
 

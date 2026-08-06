@@ -7,7 +7,7 @@ async function main() {
     throw new Error("REPO_NAME is required.");
   }
 
-  const resumeJsonPath = path.join(process.cwd(), "resume.json");
+  const resumeJsonPath = process.env.RESUME_JSON_PATH || path.join(process.cwd(), "data", "resume.json");
   const bulletsPath = path.join(process.cwd(), process.env.BULLETS_FILE || "bullets.json");
 
   const resume = await fs.readJson(resumeJsonPath);

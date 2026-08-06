@@ -19,6 +19,14 @@ jobs:
         with:
           ref: main
 
+      - name: Checkout resume-data (private)
+        uses: actions/checkout@v4
+        with:
+          repository: ChamathDilshanC/resume-data
+          token: ${{ secrets.RESUME_DATA_PAT }}
+          ref: main
+          path: data
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -32,9 +40,11 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y fonts-crosextra-carlito
 
       - name: Generate resume.pdf
+        env:
+          RESUME_JSON_PATH: ${{ github.workspace }}/data/resume.json
         run: node generate-pdf.js
 
       - name: Commit and push updated resume.pdf
         env:
           COMMIT_MESSAGE: "chore: regenerate resume.pdf"
-        run: bash scripts/commit-and-push.sh
+        run: bash scripts/commit-and-push.sh . resume.pdf

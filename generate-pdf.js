@@ -4,7 +4,7 @@ const Handlebars = require("handlebars");
 const puppeteer = require("puppeteer");
 
 const ROOT = __dirname;
-const RESUME_JSON_PATH = path.join(ROOT, "resume.json");
+const RESUME_JSON_PATH = process.env.RESUME_JSON_PATH || path.join(ROOT, "data", "resume.json");
 const TEMPLATE_PATH = path.join(ROOT, "template.html");
 const STYLES_PATH = path.join(ROOT, "styles.css");
 const OUTPUT_PDF_PATH = path.join(ROOT, "resume.pdf");

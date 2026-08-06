@@ -23,6 +23,12 @@ Issue Form submissions both flow through GitHub Actions, get rewritten into
 professional bullet points by an AI step, and are compiled into `resume.pdf`
 via Puppeteer — no server, webhook receiver, or database required.
 
+The raw `resume.json` (contact details, reference phone numbers) lives in a
+separate private repo, [`resume-data`](https://github.com/ChamathDilshanC/resume-data),
+so it never has to sit in a public repo — this repo checks it out alongside
+the pipeline code on every run and only ever publishes the rendered
+`resume.pdf`.
+
 See `architecture.md`, `implementation.md`, and `technologies-used.md` in the
 parent repo for the full design rationale.
 
@@ -46,16 +52,15 @@ sequenceDiagram
     end
     Core->>AI: generate 2-3 ATS bullet points
     AI-->>Core: JSON array of strings
-    Core->>Core: merge into resume.json<br/>(projects[] or work[])
+    Core->>Core: merge into resume.json<br/>(projects[] or work[], in resume-data)
     Core->>PDF: render template.html + resume.json
     PDF-->>Core: resume.pdf
-    Core->>Core: commit & push (+ close issue for Flow B)
+    Core->>Core: push resume.json to resume-data,<br/>resume.pdf to resume-core (+ close issue for Flow B)
 ```
 
 ## Repository layout
 
 ```
-resume.json                        Single source of truth (JSON Resume standard)
 template.html                      Handlebars template for the PDF layout
 styles.css                         Print-optimized stylesheet (inlined at render time)
 generate-pdf.js                    Compiles template + data and renders resume.pdf via Puppeteer
@@ -78,6 +83,11 @@ scripts/
 notifier-template/notify-resume.yml  Template to copy into each tracked project repo
 ```
 
+`resume.json` itself lives in the private
+[`resume-data`](https://github.com/ChamathDilshanC/resume-data) repo — every
+workflow here checks it out into `data/` alongside this repo before touching
+it (see **One-time setup** below).
+
 ## One-time setup
 
 ### 1. `resume-core` repository settings
@@ -86,6 +96,12 @@ notifier-template/notify-resume.yml  Template to copy into each tracked project 
   `resume.pdf` back to the repo.
 - **Settings → Secrets and variables → Actions → Secrets**, add:
   - `AI_API_KEY` — key for GitHub Models or Google Gemini.
+  - `RESUME_DATA_PAT` — a fine-grained PAT scoped to only the
+    [`resume-data`](https://github.com/ChamathDilshanC/resume-data) repo,
+    with **Contents: Read and write** permission. Every workflow here checks
+    that repo out into `data/` to read/edit `resume.json`, then pushes the
+    change back — this has to be a PAT (not the default `GITHUB_TOKEN`)
+    because `GITHUB_TOKEN` can only ever touch the repo the workflow runs in.
   - `RESUME_CORE_PAT` *(optional)* — only needed if tracked project repos are
     private; used to read their repo/language data.
 - **Settings → Secrets and variables → Actions → Variables** *(optional)*,
@@ -151,8 +167,12 @@ The only thing you ever do by hand for a brand-new project: add the
 
 ```bash
 npm install
-npm run generate        # renders resume.pdf from resume.json + template.html
+git clone https://github.com/ChamathDilshanC/resume-data.git data
+npm run generate        # renders resume.pdf from data/resume.json + template.html
 ```
+
+`resume.json` isn't in this repo — clone `resume-data` into `./data` (gitignored)
+first, or point `RESUME_JSON_PATH` at wherever your local copy lives.
 
 > **Font note:** the template uses Calibri. Locally on Windows this renders
 > with real Calibri; the CI workflows install the metric-compatible

@@ -17,11 +17,20 @@ jobs:
     env:
       SOURCE_REPO_OWNER: ${{ github.event.client_payload.repo_owner }}
       SOURCE_REPO_NAME: ${{ github.event.client_payload.repo_name }}
+      RESUME_JSON_PATH: ${{ github.workspace }}/data/resume.json
     steps:
       - name: Checkout resume-core
         uses: actions/checkout@v4
         with:
           ref: main
+
+      - name: Checkout resume-data (private)
+        uses: actions/checkout@v4
+        with:
+          repository: ChamathDilshanC/resume-data
+          token: ${{ secrets.RESUME_DATA_PAT }}
+          ref: main
+          path: data
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -67,8 +76,14 @@ jobs:
         if: steps.repo_data.outputs.is_ready == 'true'
         run: node generate-pdf.js
 
-      - name: Commit and push updated resume
+      - name: Commit and push resume.json (resume-data)
         if: steps.repo_data.outputs.is_ready == 'true'
         env:
           COMMIT_MESSAGE: "feat: add ${{ steps.repo_data.outputs.repo_name }} project to resume"
-        run: bash scripts/commit-and-push.sh
+        run: bash scripts/commit-and-push.sh data resume.json
+
+      - name: Commit and push resume.pdf (resume-core)
+        if: steps.repo_data.outputs.is_ready == 'true'
+        env:
+          COMMIT_MESSAGE: "feat: add ${{ steps.repo_data.outputs.repo_name }} project to resume"
+        run: bash scripts/commit-and-push.sh . resume.pdf

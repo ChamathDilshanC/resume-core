@@ -16,11 +16,21 @@ jobs:
   update-work-experience:
     if: contains(github.event.issue.labels.*.name, 'work-experience')
     runs-on: ubuntu-latest
+    env:
+      RESUME_JSON_PATH: ${{ github.workspace }}/data/resume.json
     steps:
       - name: Checkout resume-core
         uses: actions/checkout@v4
         with:
           ref: main
+
+      - name: Checkout resume-data (private)
+        uses: actions/checkout@v4
+        with:
+          repository: ChamathDilshanC/resume-data
+          token: ${{ secrets.RESUME_DATA_PAT }}
+          ref: main
+          path: data
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -54,10 +64,15 @@ jobs:
       - name: Generate resume.pdf
         run: node generate-pdf.js
 
-      - name: Commit and push updated resume
+      - name: Commit and push resume.json (resume-data)
         env:
           COMMIT_MESSAGE: "feat: add ${{ env.ISSUE_POSITION }} at ${{ env.ISSUE_COMPANY }} to resume"
-        run: bash scripts/commit-and-push.sh
+        run: bash scripts/commit-and-push.sh data resume.json
+
+      - name: Commit and push resume.pdf (resume-core)
+        env:
+          COMMIT_MESSAGE: "feat: add ${{ env.ISSUE_POSITION }} at ${{ env.ISSUE_COMPANY }} to resume"
+        run: bash scripts/commit-and-push.sh . resume.pdf
 
       - name: Close issue
         uses: actions/github-script@v7
