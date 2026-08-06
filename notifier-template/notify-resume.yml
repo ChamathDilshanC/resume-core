@@ -1,6 +1,13 @@
 # Copy this file to `.github/workflows/notify-resume.yml` in any repository
 # tagged with the `resume-project` topic. It notifies resume-core whenever
-# the default branch is pushed to, triggering the automated resume update.
+# the default branch is pushed to.
+#
+# IMPORTANT — this alone does NOT add the project to the resume. resume-core
+# checks the source repo's topics and only processes the push if the repo
+# ALSO has a `resume-ready` topic. Keep pushing/iterating freely with just
+# `resume-project` — add `resume-ready` (Settings -> topic tags) once the
+# project is actually presentable, then push again (or re-run the workflow)
+# to have it appear on the resume.
 #
 # Required secret in THIS repo: RESUME_CORE_PAT
 #   A fine-grained Personal Access Token scoped to trigger `repository_dispatch`

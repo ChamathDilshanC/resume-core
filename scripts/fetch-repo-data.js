@@ -75,15 +75,26 @@ async function main() {
     }
   }
 
+  const topics = repoDetails.topics || [];
+  const isReady = topics.includes("resume-ready");
+
   const output = {
     repo_name: repoDetails.name,
     repo_description: repoDetails.description || "",
     repo_url: repoDetails.html_url,
     tech_stack: [...languageSet].join(", "),
+    is_ready: isReady,
   };
 
   await fs.writeJson(path.join(process.cwd(), "repo-data.json"), output, { spaces: 2 });
   console.log("Fetched repo data:", output);
+
+  if (!isReady) {
+    console.log(
+      `"${output.repo_name}" does not have the "resume-ready" topic yet — skipping the resume update. ` +
+        `Add the topic on GitHub once the project is presentable, then push again.`
+    );
+  }
 
   const githubOutput = process.env.GITHUB_OUTPUT;
   if (githubOutput) {
@@ -92,6 +103,7 @@ async function main() {
       `repo_description=${output.repo_description}`,
       `repo_url=${output.repo_url}`,
       `tech_stack=${output.tech_stack}`,
+      `is_ready=${output.is_ready}`,
     ];
     await fs.appendFile(githubOutput, lines.join("\n") + "\n");
   }

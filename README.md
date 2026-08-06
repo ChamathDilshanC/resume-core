@@ -101,6 +101,14 @@ notifier-template/notify-resume.yml  Template to copy into each tracked project 
   Organization secret if every tracked repo shares the same owner.
 - Update the `repository:` field in the copied workflow if the resume-core
   repo doesn't live at `ChamathDilshanC/resume-core`.
+- **Two topics, two purposes:**
+  - `resume-project` — this repo is wired up (has the notifier workflow).
+    Push all you want while the project is unfinished; nothing happens yet.
+  - `resume-ready` — add this topic once the project is actually presentable.
+    `fetch-repo-data.js` checks for it on every push and skips the AI/PDF
+    steps entirely if it's missing, so half-built projects never leak onto
+    the resume. Add the topic, then push (or re-run the workflow) to have it
+    appear.
 
 ### 3. Manual work experience entries
 - Open a new issue in `resume-core` using the **New Work Experience** form
