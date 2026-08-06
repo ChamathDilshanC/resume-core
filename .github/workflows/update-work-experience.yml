@@ -19,6 +19,8 @@ jobs:
     steps:
       - name: Checkout resume-core
         uses: actions/checkout@v4
+        with:
+          ref: main
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
