@@ -157,9 +157,9 @@
       "name": "Main-DocMind-AI",
       "description": "DocMind AI — AI-powered RAG document assistant (meta-repo: backend + frontend submodules, local dev infra)",
       "highlights": [
-        "Architected an AI-powered Retrieval-Augmented Generation (RAG) document assistant structured as a unified meta-repository with decoupled backend and frontend submodules.",
-        "Engineered local development infrastructure to streamline cross-service environment setup, local testing, and developer workflows.",
-        "Developed modular backend and frontend interfaces to support scalable document querying and retrieval-augmented intelligence capabilities."
+        "Architected DocMind AI, a .NET 8 Clean Architecture + CQRS RAG (Retrieval-Augmented Generation) document assistant, structured as a meta-repository with Git submodules to unify backend and frontend modular development.",
+        "Engineered a C# backend using Semantic Kernel and Qdrant vector search with PostgreSQL persistence, enabling grounded question-answering over uploaded PDF/DOCX documents with streamed, page-level cited responses.",
+        "Developed a TypeScript-based frontend and containerized the full stack with Docker for consistent local development and deployment infrastructure."
       ],
       "links": [
         {
