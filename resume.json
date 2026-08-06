@@ -154,6 +154,21 @@
   ],
   "projects": [
     {
+      "name": "Cap-IT-Screen-Recorder",
+      "description": "Fast Windows screen recorder — DXGI Desktop Duplication capture, live preview, selectable cursor overlays, up to 4K. WinUI 3 + FFmpeg.",
+      "highlights": [
+        "Engineered a high-performance desktop screen recording application in C# featuring real-time video capture up to 4K resolution, live previews, and customizable cursor overlays.",
+        "Optimized frame capture workflows in C# to maintain high frame rates and low CPU utilization during extended screen recording sessions.",
+        "Created an automated installation package using Inno Setup to simplify software deployment and streamline the setup experience for end users."
+      ],
+      "links": [
+        {
+          "label": "Cap-IT-Screen-Recorder",
+          "url": "https://github.com/ChamathDilshanC/Cap-IT-Screen-Recorder"
+        }
+      ]
+    },
+    {
       "name": "Main-DocMind-AI",
       "description": "DocMind AI — AI-powered RAG document assistant (meta-repo: backend + frontend submodules, local dev infra)",
       "highlights": [
