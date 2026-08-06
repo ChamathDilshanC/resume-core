@@ -67,10 +67,12 @@ scripts/
   merge-work.js                    Appends/updates an entry in resume.json's `work` array
   parse-issue.js                   Parses a submitted Issue Form body into fields
   commit-and-push.sh               Retry-safe commit/push (fetch + rebase on non-fast-forward)
+  discover-projects.js             Scans your repos and auto-tags untracked meta-repos with resume-project
 .github/workflows/
   update-resume.yml                Flow A: repository_dispatch -> AI -> merge -> PDF -> commit
   update-work-experience.yml       Flow B: issues:opened -> AI -> merge -> PDF -> commit -> close issue
   regenerate-pdf.yml               workflow_dispatch: re-render the PDF only (used by resume-admin)
+  discover-projects.yml            Daily + workflow_dispatch: runs discover-projects.js
 .github/ISSUE_TEMPLATE/
   work-experience.yml              Structured form for manual work experience entries
 notifier-template/notify-resume.yml  Template to copy into each tracked project repo
@@ -93,6 +95,9 @@ notifier-template/notify-resume.yml  Template to copy into each tracked project 
   - `AI_MODEL` — e.g. `openai/gpt-4o-mini` or `gemini-flash-latest`.
 
 ### 2. Each tracked project repository
+
+You almost never need to do this by hand — see **Auto-discovery** below. To
+wire a repo up manually anyway:
 - Add the `resume-project` topic to the repo (Settings → topic tags).
 - Copy `notifier-template/notify-resume.yml` to
   `.github/workflows/notify-resume.yml` in that repo.
@@ -101,14 +106,41 @@ notifier-template/notify-resume.yml  Template to copy into each tracked project 
   Organization secret if every tracked repo shares the same owner.
 - Update the `repository:` field in the copied workflow if the resume-core
   repo doesn't live at `ChamathDilshanC/resume-core`.
-- **Two topics, two purposes:**
-  - `resume-project` — this repo is wired up (has the notifier workflow).
-    Push all you want while the project is unfinished; nothing happens yet.
-  - `resume-ready` — add this topic once the project is actually presentable.
-    `fetch-repo-data.js` checks for it on every push and skips the AI/PDF
-    steps entirely if it's missing, so half-built projects never leak onto
-    the resume. Add the topic, then push (or re-run the workflow) to have it
-    appear.
+
+**Two topics, two purposes:**
+- `resume-project` — this repo is wired up (has the notifier workflow).
+  Push all you want while the project is unfinished; nothing happens yet.
+- `resume-ready` — add this topic once the project is actually presentable.
+  `fetch-repo-data.js` checks for it on every push and skips the AI/PDF
+  steps entirely if it's missing, so half-built projects never leak onto
+  the resume. Add the topic, then push (or re-run the workflow) to have it
+  appear.
+
+### 3. Auto-discovery — never forget to tag a new repo
+
+`discover-projects.yml` runs daily (and on-demand via `workflow_dispatch`)
+and does the `resume-project` half of setup for you:
+
+1. Lists every repo you own.
+2. For each one that isn't already tagged `resume-project`, checks whether
+   it has a `.gitmodules` file at the root — i.e. it's a "main" meta-repo
+   that wraps submodules (the `VibeNet-Main` / `RevvUp-Main-Application`
+   pattern), not a leaf `frontend`/`backend` repo.
+3. If so: adds the `resume-project` topic and commits a ready-to-use
+   `notify-resume.yml` into that repo automatically.
+4. Skips anything that's already a *nested* submodule of an already-tracked
+   repo (e.g. a microservices "platform" repo referenced by a tracked
+   monorepo) so multi-level submodule structures never get double-tracked.
+
+This needs `secrets.RESUME_CORE_PAT` set **on `resume-core` itself** with
+broad access (list/read all your repos, write topics, write file contents) —
+narrower than that and the scan can't see your other repos at all. It still
+can't provision the per-tracked-repo `RESUME_CORE_PAT` secret automatically
+(that requires an even broader, secrets-write scope) — that one manual step
+remains, and the workflow's summary output lists exactly which repos need it.
+
+The only thing you ever do by hand for a brand-new project: add the
+`resume-ready` topic once it's actually done.
 
 ### 3. Manual work experience entries
 - Open a new issue in `resume-core` using the **New Work Experience** form

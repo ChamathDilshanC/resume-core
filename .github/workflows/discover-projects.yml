@@ -1,0 +1,41 @@
+name: Discover Untracked Projects
+
+on:
+  schedule:
+    - cron: "0 3 * * *" # daily at 03:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout resume-core
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Scan repos for untracked meta-repos and wire them up
+        env:
+          GITHUB_TOKEN: ${{ secrets.RESUME_CORE_PAT }}
+          REPO_OWNER: ${{ github.repository_owner }}
+          RESUME_CORE_OWNER: ${{ github.repository_owner }}
+          RESUME_CORE_REPO: ${{ github.event.repository.name }}
+        run: node scripts/discover-projects.js
+
+      - name: Upload discovery summary
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: discovery-summary
+          path: discovery-summary.json
+          retention-days: 14
