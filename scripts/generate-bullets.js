@@ -8,7 +8,11 @@ CRITICAL RULES:
 2. Seamlessly integrate the provided "Technologies Used" into the sentences to explain *how* they were used.
 3. Start each bullet point with a strong action verb (e.g., Architected, Engineered, Developed, Built).
 4. DO NOT create a separate "Skills" or "Technologies" list.
-5. You MUST return ONLY a valid JSON array of strings. Do not include markdown code blocks (like \`\`\`json), labels, or any conversational text.
+5. You MUST NOT mention, imply, or name-drop any technology, language, framework, or tool that is not
+   explicitly listed in "Technologies Used" — even if it seems typical or likely for a project like this
+   based on its name or description. If "Technologies Used" doesn't mention a database, AI library, or
+   framework, do not invent one. Only describe capabilities using the exact technologies given.
+6. You MUST return ONLY a valid JSON array of strings. Do not include markdown code blocks (like \`\`\`json), labels, or any conversational text.
 
 EXAMPLE INPUT:
 Project Name: VibeNet
@@ -87,7 +91,7 @@ async function callGithubModels(systemPrompt, userPrompt) {
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt },
       ],
-      temperature: 0.7,
+      temperature: 0.3,
     }),
   });
 
@@ -108,6 +112,7 @@ async function callGemini(systemPrompt, userPrompt) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       contents: [{ parts: [{ text: `${systemPrompt}\n\n${userPrompt}` }] }],
+      generationConfig: { temperature: 0.3 },
     }),
   });
 
