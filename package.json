@@ -10,7 +10,8 @@
     "generate-bullets": "node scripts/generate-bullets.js",
     "merge-project": "node scripts/merge-project.js",
     "merge-work": "node scripts/merge-work.js",
-    "parse-issue": "node scripts/parse-issue.js"
+    "parse-issue": "node scripts/parse-issue.js",
+    "upload-to-drive": "node scripts/upload-to-drive.js"
   },
   "author": "Chamath Dilshan",
   "license": "MIT",
@@ -19,6 +20,7 @@
   },
   "dependencies": {
     "fs-extra": "^11.2.0",
+    "googleapis": "^174.0.1",
     "handlebars": "^4.7.8",
     "puppeteer": "^23.9.0"
   }

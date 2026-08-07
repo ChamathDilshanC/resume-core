@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: resume-core-update
@@ -44,7 +44,8 @@ jobs:
           RESUME_JSON_PATH: ${{ github.workspace }}/data/resume.json
         run: node generate-pdf.js
 
-      - name: Commit and push updated resume.pdf
+      - name: Upload resume.pdf to Google Drive
         env:
-          COMMIT_MESSAGE: "chore: regenerate resume.pdf"
-        run: bash scripts/commit-and-push.sh . resume.pdf
+          GDRIVE_CREDENTIALS: ${{ secrets.GDRIVE_CREDENTIALS }}
+          GDRIVE_FILE_ID: ${{ secrets.GDRIVE_FILE_ID }}
+        run: node scripts/upload-to-drive.js

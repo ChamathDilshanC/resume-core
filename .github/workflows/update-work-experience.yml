@@ -5,7 +5,7 @@ on:
     types: [opened]
 
 permissions:
-  contents: write
+  contents: read
   issues: write
 
 concurrency:
@@ -67,10 +67,11 @@ jobs:
           COMMIT_MESSAGE: "feat: add ${{ env.ISSUE_POSITION }} at ${{ env.ISSUE_COMPANY }} to resume"
         run: bash scripts/commit-and-push.sh data resume.json
 
-      - name: Commit and push resume.pdf (resume-core)
+      - name: Upload resume.pdf to Google Drive
         env:
-          COMMIT_MESSAGE: "feat: add ${{ env.ISSUE_POSITION }} at ${{ env.ISSUE_COMPANY }} to resume"
-        run: bash scripts/commit-and-push.sh . resume.pdf
+          GDRIVE_CREDENTIALS: ${{ secrets.GDRIVE_CREDENTIALS }}
+          GDRIVE_FILE_ID: ${{ secrets.GDRIVE_FILE_ID }}
+        run: node scripts/upload-to-drive.js
 
       - name: Close issue
         uses: actions/github-script@v7

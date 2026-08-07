@@ -26,8 +26,9 @@ via Puppeteer — no server, webhook receiver, or database required.
 The raw `resume.json` (contact details, reference phone numbers) lives in a
 separate private repo, [`resume-data`](https://github.com/ChamathDilshanC/resume-data),
 so it never has to sit in a public repo — this repo checks it out alongside
-the pipeline code on every run and only ever publishes the rendered
-`resume.pdf`.
+the pipeline code on every run. The rendered `resume.pdf` is never committed
+here either; each run overwrites the same file in Google Drive instead (see
+[Google Drive upload](#google-drive-upload) below).
 
 See `architecture.md`, `implementation.md`, and `technologies-used.md` in the
 parent repo for the full design rationale.
@@ -55,7 +56,7 @@ sequenceDiagram
     Core->>Core: merge into resume.json<br/>(projects[] or work[], in resume-data)
     Core->>PDF: render template.html + resume.json
     PDF-->>Core: resume.pdf
-    Core->>Core: push resume.json to resume-data,<br/>resume.pdf to resume-core (+ close issue for Flow B)
+    Core->>Core: push resume.json to resume-data,<br/>upload resume.pdf to Google Drive (+ close issue for Flow B)
 ```
 
 ## Repository layout
@@ -72,11 +73,12 @@ scripts/
   merge-work.js                    Appends/updates an entry in resume.json's `work` array
   parse-issue.js                   Parses a submitted Issue Form body into fields
   commit-and-push.sh               Retry-safe commit/push (fetch + rebase on non-fast-forward)
+  upload-to-drive.js               Overwrites resume.pdf in Google Drive via the Drive API
   discover-projects.js             Scans your repos and auto-tags untracked meta-repos with resume-project
 .github/workflows/
-  update-resume.yml                Flow A: repository_dispatch -> AI -> merge -> PDF -> commit
-  update-work-experience.yml       Flow B: issues:opened -> AI -> merge -> PDF -> commit -> close issue
-  regenerate-pdf.yml               workflow_dispatch: re-render the PDF only (used by resume-admin)
+  update-resume.yml                Flow A: repository_dispatch -> AI -> merge -> PDF -> upload to Drive
+  update-work-experience.yml       Flow B: issues:opened -> AI -> merge -> PDF -> upload to Drive -> close issue
+  regenerate-pdf.yml               workflow_dispatch: re-render the PDF + re-upload (used by resume-admin)
   discover-projects.yml            Daily + workflow_dispatch: runs discover-projects.js
 .github/ISSUE_TEMPLATE/
   work-experience.yml              Structured form for manual work experience entries
@@ -91,9 +93,10 @@ it (see **One-time setup** below).
 ## One-time setup
 
 ### 1. `resume-core` repository settings
-- **Settings → Actions → General → Workflow permissions**: set to
-  "Read and write permissions" so `GITHUB_TOKEN` can commit `resume.json` /
-  `resume.pdf` back to the repo.
+- **Settings → Actions → General → Workflow permissions**: default
+  "Read repository contents" permission is enough — nothing in this repo is
+  committed back to it anymore (`resume.pdf` goes to Google Drive instead,
+  `resume.json` goes to the separate `resume-data` repo via its own PAT).
 - **Settings → Secrets and variables → Actions → Secrets**, add:
   - `AI_API_KEY` — a Google AI Studio (Gemini) API key. Can hold several
     comma-separated keys (e.g. from separate Google accounts); if one hits
@@ -107,10 +110,39 @@ it (see **One-time setup** below).
     because `GITHUB_TOKEN` can only ever touch the repo the workflow runs in.
   - `RESUME_CORE_PAT` *(optional)* — only needed if tracked project repos are
     private; used to read their repo/language data.
+  - `GDRIVE_CREDENTIALS` — full JSON key of a Google Cloud service account
+    (Drive API enabled). See **Google Drive upload** below.
+  - `GDRIVE_FILE_ID` — the Drive file ID `resume.pdf` gets uploaded into. See
+    **Google Drive upload** below.
 - **Settings → Secrets and variables → Actions → Variables** *(optional)*:
   - `AI_MODEL` — override the first Gemini model tried (falls back through
     `gemini-flash-latest` → `gemini-2.5-flash` → `gemini-2.5-flash-lite`
     regardless).
+
+### Google Drive upload
+
+Service accounts have **zero storage quota** on a normal (non-Workspace)
+Google account, so they can't *create* new files — but they can overwrite
+the *content* of a file a real person already owns and shared with them,
+which counts against the owner's quota instead. `scripts/upload-to-drive.js`
+relies on exactly that (`files.update` on a fixed file ID), so the one-time
+setup has to create the placeholder file yourself first:
+
+1. **Google Cloud Console** → create/select a project → enable the
+   **Google Drive API**.
+2. **IAM & Admin → Service Accounts** → create one (no project roles
+   needed) → **Keys** → add key → JSON. That downloaded file's contents are
+   the `GDRIVE_CREDENTIALS` secret. Note the service account's email
+   (`...@...iam.gserviceaccount.com`).
+3. In your own Google Drive, upload any placeholder `resume.pdf` (even a
+   blank file) — this makes *you* the owner.
+4. Share that file with the service account's email, **Editor** access.
+5. Open the file and copy the ID out of its URL
+   (`drive.google.com/file/d/`**`THIS_PART`**`/view`) — that's the
+   `GDRIVE_FILE_ID` secret.
+
+After that, every pipeline run overwrites the same Drive file in place; the
+file's shareable link never changes.
 
 ### 2. Each tracked project repository
 

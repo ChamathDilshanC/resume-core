@@ -4,6 +4,9 @@ npm-debug.log*
 *.log
 .DS_Store
 
+# generated locally / uploaded to Google Drive by the pipeline, not tracked
+/resume.pdf
+
 # resume.json lives in the private resume-data repo — clone/symlink it
 # here for local runs of generate-pdf.js / merge-*.js (RESUME_JSON_PATH)
 /data/

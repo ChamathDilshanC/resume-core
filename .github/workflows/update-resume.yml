@@ -5,7 +5,7 @@ on:
     types: [resume_update]
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: resume-core-update
@@ -80,8 +80,9 @@ jobs:
           COMMIT_MESSAGE: "feat: add ${{ steps.repo_data.outputs.repo_name }} project to resume"
         run: bash scripts/commit-and-push.sh data resume.json
 
-      - name: Commit and push resume.pdf (resume-core)
+      - name: Upload resume.pdf to Google Drive
         if: steps.repo_data.outputs.is_ready == 'true'
         env:
-          COMMIT_MESSAGE: "feat: add ${{ steps.repo_data.outputs.repo_name }} project to resume"
-        run: bash scripts/commit-and-push.sh . resume.pdf
+          GDRIVE_CREDENTIALS: ${{ secrets.GDRIVE_CREDENTIALS }}
+          GDRIVE_FILE_ID: ${{ secrets.GDRIVE_FILE_ID }}
+        run: node scripts/upload-to-drive.js
