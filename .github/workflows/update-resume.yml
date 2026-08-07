@@ -87,6 +87,15 @@ jobs:
           GDRIVE_FILE_ID: ${{ secrets.GDRIVE_FILE_ID }}
         run: node scripts/upload-to-drive.js
 
+      - name: Send resume.pdf via email
+        if: steps.repo_data.outputs.is_ready == 'true'
+        env:
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_APP_PASSWORD: ${{ secrets.SMTP_APP_PASSWORD }}
+          RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
+          GDRIVE_FILE_ID: ${{ secrets.GDRIVE_FILE_ID }}
+        run: node scripts/send-email.js
+
       - name: Send resume.pdf via WhatsApp
         if: steps.repo_data.outputs.is_ready == 'true'
         env:

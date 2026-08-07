@@ -83,8 +83,42 @@ jobs:
           GDRIVE_FILE_ID: ${{ secrets.GDRIVE_FILE_ID }}
         run: node scripts/upload-to-drive.js
 
-  send-whatsapp:
+  send-email:
     needs: upload-to-drive
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout resume-core
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Download resume.pdf artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: resume-pdf
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        env:
+          # This job only needs nodemailer, not puppeteer's headless Chrome.
+          PUPPETEER_SKIP_DOWNLOAD: "true"
+        run: npm ci
+
+      - name: Send resume.pdf via email
+        env:
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_APP_PASSWORD: ${{ secrets.SMTP_APP_PASSWORD }}
+          RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
+          GDRIVE_FILE_ID: ${{ secrets.GDRIVE_FILE_ID }}
+        run: node scripts/send-email.js
+
+  send-whatsapp:
+    needs: send-email
     runs-on: ubuntu-latest
     steps:
       - name: Checkout resume-core

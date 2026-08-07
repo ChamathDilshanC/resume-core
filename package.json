@@ -12,7 +12,8 @@
     "merge-work": "node scripts/merge-work.js",
     "parse-issue": "node scripts/parse-issue.js",
     "upload-to-drive": "node scripts/upload-to-drive.js",
-    "send-whatsapp": "node scripts/send-whatsapp.js"
+    "send-whatsapp": "node scripts/send-whatsapp.js",
+    "send-email": "node scripts/send-email.js"
   },
   "author": "Chamath Dilshan",
   "license": "MIT",
@@ -23,6 +24,7 @@
     "fs-extra": "^11.2.0",
     "googleapis": "^174.0.1",
     "handlebars": "^4.7.8",
+    "nodemailer": "^9.0.5",
     "puppeteer": "^23.9.0"
   }
 }

@@ -56,7 +56,7 @@ sequenceDiagram
     Core->>Core: merge into resume.json<br/>(projects[] or work[], in resume-data)
     Core->>PDF: render template.html + resume.json
     PDF-->>Core: resume.pdf
-    Core->>Core: push resume.json to resume-data,<br/>upload resume.pdf to Google Drive,<br/>send it via WhatsApp (+ close issue for Flow B)
+    Core->>Core: push resume.json to resume-data,<br/>upload resume.pdf to Google Drive,<br/>email it, send it via WhatsApp (+ close issue for Flow B)
 ```
 
 ## Repository layout
@@ -74,6 +74,7 @@ scripts/
   parse-issue.js                   Parses a submitted Issue Form body into fields
   commit-and-push.sh               Retry-safe commit/push (fetch + rebase on non-fast-forward)
   upload-to-drive.js               Overwrites resume.pdf in Google Drive via the Drive API
+  send-email.js                    Emails resume.pdf (with a Drive link) via Gmail SMTP
   send-whatsapp.js                 Uploads resume.pdf to Meta's Graph API and sends it as a document message
   discover-projects.js             Scans your repos and auto-tags untracked meta-repos with resume-project
 .github/workflows/
@@ -115,6 +116,13 @@ it (see **One-time setup** below).
     (Drive API enabled). See **Google Drive upload** below.
   - `GDRIVE_FILE_ID` — the Drive file ID `resume.pdf` gets uploaded into. See
     **Google Drive upload** below.
+  - `SMTP_USER` — the Gmail address the resume gets emailed *from*.
+  - `SMTP_APP_PASSWORD` — a 16-character
+    [Google App Password](https://myaccount.google.com/apppasswords) for
+    that account (needs 2-Step Verification enabled first) — not the
+    regular Google account password, which Gmail's SMTP rejects.
+  - `RECIPIENT_EMAIL` — the address that receives the resume. Can be the
+    same address as `SMTP_USER` to just email yourself.
   - `WHATSAPP_TOKEN` — a Meta access token for a WhatsApp Business app. See
     **WhatsApp delivery** below.
   - `WHATSAPP_PHONE_NUMBER_ID` — the sending number's Phone Number ID (from
