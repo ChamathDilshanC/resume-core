@@ -11,9 +11,13 @@ async function main() {
 
   const auth = new google.auth.GoogleAuth({
     credentials: JSON.parse(credentialsJson),
-    // drive.file: only touches files the service account created or that
-    // were explicitly shared with it — never broader Drive access.
-    scopes: ["https://www.googleapis.com/auth/drive.file"],
+    // drive.file only sees files the app itself created/opened — sharing a
+    // file with the service account via the normal Drive UI doesn't count,
+    // so files.list/files.update 404 on it despite the ACL grant. The
+    // broader "drive" scope respects ordinary ACL sharing instead; it's
+    // still limited in practice to whatever's actually been shared with
+    // this service account's email.
+    scopes: ["https://www.googleapis.com/auth/drive"],
   });
 
   const drive = google.drive({ version: "v3", auth });
