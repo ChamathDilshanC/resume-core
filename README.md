@@ -56,7 +56,7 @@ sequenceDiagram
     Core->>Core: merge into resume.json<br/>(projects[] or work[], in resume-data)
     Core->>PDF: render template.html + resume.json
     PDF-->>Core: resume.pdf
-    Core->>Core: push resume.json to resume-data,<br/>upload resume.pdf to Google Drive (+ close issue for Flow B)
+    Core->>Core: push resume.json to resume-data,<br/>upload resume.pdf to Google Drive,<br/>send it via WhatsApp (+ close issue for Flow B)
 ```
 
 ## Repository layout
@@ -74,6 +74,7 @@ scripts/
   parse-issue.js                   Parses a submitted Issue Form body into fields
   commit-and-push.sh               Retry-safe commit/push (fetch + rebase on non-fast-forward)
   upload-to-drive.js               Overwrites resume.pdf in Google Drive via the Drive API
+  send-whatsapp.js                 Uploads resume.pdf to Meta's Graph API and sends it as a document message
   discover-projects.js             Scans your repos and auto-tags untracked meta-repos with resume-project
 .github/workflows/
   update-resume.yml                Flow A: repository_dispatch -> AI -> merge -> PDF -> upload to Drive
@@ -114,6 +115,12 @@ it (see **One-time setup** below).
     (Drive API enabled). See **Google Drive upload** below.
   - `GDRIVE_FILE_ID` — the Drive file ID `resume.pdf` gets uploaded into. See
     **Google Drive upload** below.
+  - `WHATSAPP_TOKEN` — a Meta access token for a WhatsApp Business app. See
+    **WhatsApp delivery** below.
+  - `WHATSAPP_PHONE_NUMBER_ID` — the sending number's Phone Number ID (from
+    the Meta app dashboard, not the phone number itself).
+  - `RECIPIENT_PHONE_NUMBER` — the number to receive the resume, in full
+    international format with no `+` or leading zeros (e.g. `9477xxxxxxx`).
 - **Settings → Secrets and variables → Actions → Variables** *(optional)*:
   - `AI_MODEL` — override the first Gemini model tried (falls back through
     `gemini-flash-latest` → `gemini-2.5-flash` → `gemini-2.5-flash-lite`
@@ -143,6 +150,26 @@ setup has to create the placeholder file yourself first:
 
 After that, every pipeline run overwrites the same Drive file in place; the
 file's shareable link never changes.
+
+### WhatsApp delivery
+
+`scripts/send-whatsapp.js` uploads `resume.pdf` to Meta's Graph API as media,
+then sends it as a document message to `RECIPIENT_PHONE_NUMBER`.
+
+1. Create an app at [developers.facebook.com](https://developers.facebook.com/)
+   → add the **WhatsApp** product.
+2. The app dashboard's WhatsApp → API Setup page gives you a test number,
+   its **Phone Number ID** (`WHATSAPP_PHONE_NUMBER_ID`), and a **temporary**
+   access token good for 24 hours — fine for a one-off test, but the pipeline
+   needs a token that doesn't expire daily. Generate a **permanent** one
+   instead: Business Settings → Users → System Users → create a system user
+   → **Generate token** → select the app with `whatsapp_business_messaging`
+   permission → that's `WHATSAPP_TOKEN`.
+3. **Test-mode restriction:** until the Meta app is business-verified, it can
+   only message numbers explicitly added as testers. Add
+   `RECIPIENT_PHONE_NUMBER` under WhatsApp → API Setup → "To" → **Manage
+   phone number list**, and accept the invite Meta sends to that number —
+   otherwise every send silently 400s with "recipient not in allowed list."
 
 ### 2. Each tracked project repository
 
