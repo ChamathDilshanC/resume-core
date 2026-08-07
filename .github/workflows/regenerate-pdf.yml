@@ -44,6 +44,27 @@ jobs:
           RESUME_JSON_PATH: ${{ github.workspace }}/data/resume.json
         run: node generate-pdf.js
 
+      - name: "TEMP DEBUG: list Drive files visible to service account"
+        env:
+          GDRIVE_CREDENTIALS: ${{ secrets.GDRIVE_CREDENTIALS }}
+          GDRIVE_FILE_ID: ${{ secrets.GDRIVE_FILE_ID }}
+        run: |
+          node -e "
+          const { google } = require('googleapis');
+          (async () => {
+            const creds = JSON.parse(process.env.GDRIVE_CREDENTIALS);
+            const auth = new google.auth.GoogleAuth({
+              credentials: creds,
+              scopes: ['https://www.googleapis.com/auth/drive.file'],
+            });
+            const drive = google.drive({ version: 'v3', auth });
+            const res = await drive.files.list({ fields: 'files(id,name,mimeType)' });
+            console.log('files visible to this service account:', JSON.stringify(res.data.files, null, 2));
+            console.log('GDRIVE_FILE_ID secret is:', process.env.GDRIVE_FILE_ID);
+            console.log('GDRIVE_FILE_ID length:', process.env.GDRIVE_FILE_ID.length);
+          })().catch((e) => { console.error('debug list failed:', e.message); process.exit(1); });
+          "
+
       - name: Upload resume.pdf to Google Drive
         env:
           GDRIVE_CREDENTIALS: ${{ secrets.GDRIVE_CREDENTIALS }}
