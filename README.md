@@ -95,7 +95,10 @@ it (see **One-time setup** below).
   "Read and write permissions" so `GITHUB_TOKEN` can commit `resume.json` /
   `resume.pdf` back to the repo.
 - **Settings → Secrets and variables → Actions → Secrets**, add:
-  - `AI_API_KEY` — key for GitHub Models or Google Gemini.
+  - `AI_API_KEY` — a Google AI Studio (Gemini) API key. Can hold several
+    comma-separated keys (e.g. from separate Google accounts); if one hits
+    its rate limit (429), the next is tried automatically before failing.
+    GitHub Models was retired on 2026-07-30 and is no longer usable.
   - `RESUME_DATA_PAT` — a fine-grained PAT scoped to only the
     [`resume-data`](https://github.com/ChamathDilshanC/resume-data) repo,
     with **Contents: Read and write** permission. Every workflow here checks
@@ -104,11 +107,10 @@ it (see **One-time setup** below).
     because `GITHUB_TOKEN` can only ever touch the repo the workflow runs in.
   - `RESUME_CORE_PAT` *(optional)* — only needed if tracked project repos are
     private; used to read their repo/language data.
-- **Settings → Secrets and variables → Actions → Variables** *(optional)*,
-  override AI provider defaults:
-  - `AI_PROVIDER` — `github-models` (default) or `gemini`.
-  - `AI_API_URL` — override the chat-completions endpoint.
-  - `AI_MODEL` — e.g. `openai/gpt-4o-mini` or `gemini-flash-latest`.
+- **Settings → Secrets and variables → Actions → Variables** *(optional)*:
+  - `AI_MODEL` — override the first Gemini model tried (falls back through
+    `gemini-flash-latest` → `gemini-2.5-flash` → `gemini-2.5-flash-lite`
+    regardless).
 
 ### 2. Each tracked project repository
 

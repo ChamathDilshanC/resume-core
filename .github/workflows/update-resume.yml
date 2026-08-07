@@ -51,8 +51,6 @@ jobs:
         if: steps.repo_data.outputs.is_ready == 'true'
         env:
           AI_API_KEY: ${{ secrets.AI_API_KEY }}
-          AI_PROVIDER: ${{ vars.AI_PROVIDER }}
-          AI_API_URL: ${{ vars.AI_API_URL }}
           AI_MODEL: ${{ vars.AI_MODEL }}
           PROMPT_MODE: project
           REPO_NAME: ${{ steps.repo_data.outputs.repo_name }}

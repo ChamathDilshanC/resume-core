@@ -74,38 +74,37 @@ function buildPrompt() {
   throw new Error(`Unknown PROMPT_MODE: ${mode}. Expected "project" or "work".`);
 }
 
-async function callGithubModels(systemPrompt, userPrompt) {
-  const apiUrl = process.env.AI_API_URL || "https://models.github.ai/inference/chat/completions";
-  const model = process.env.AI_MODEL || "openai/gpt-4o-mini";
-
-  const response = await fetch(apiUrl, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${process.env.AI_API_KEY}`,
-      "Content-Type": "application/json",
-      Accept: "application/vnd.github+json",
-    },
-    body: JSON.stringify({
-      model,
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userPrompt },
-      ],
-      temperature: 0.3,
-    }),
-  });
-
-  if (!response.ok) {
-    throw new Error(`AI API request failed (${response.status}): ${await response.text()}`);
+class AIRequestError extends Error {
+  constructor(message, status) {
+    super(message);
+    this.name = "AIRequestError";
+    this.status = status;
   }
-
-  const data = await response.json();
-  return data.choices[0].message.content;
 }
 
-async function callGemini(systemPrompt, userPrompt) {
-  const model = process.env.AI_MODEL || "gemini-flash-latest";
-  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${process.env.AI_API_KEY}`;
+// 503 = model overloaded ("high demand"), 429 = per-key rate/quota limited.
+// Both are worth retrying against a different model or key rather than
+// failing the whole pipeline run.
+function isRetryableStatus(status) {
+  return status === 503 || status === 429;
+}
+
+// Gemini 1.5 and 2.0 model families were shut down during 2026 — only the
+// 2.5+/3.x families are still live on v1beta. Cheapest/fastest first.
+const GEMINI_MODEL_FALLBACKS = ["gemini-flash-latest", "gemini-2.5-flash", "gemini-2.5-flash-lite"];
+
+// AI_API_KEY may hold a single key or a comma-separated list. Multiple keys
+// (e.g. from separate Google accounts) let us hop to a fresh quota when one
+// key gets rate-limited (429) instead of failing the whole workflow run.
+function getApiKeys() {
+  return (process.env.AI_API_KEY || "")
+    .split(",")
+    .map((key) => key.trim())
+    .filter(Boolean);
+}
+
+async function callGemini(systemPrompt, userPrompt, model, apiKey) {
+  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
 
   const response = await fetch(apiUrl, {
     method: "POST",
@@ -117,7 +116,7 @@ async function callGemini(systemPrompt, userPrompt) {
   });
 
   if (!response.ok) {
-    throw new Error(`AI API request failed (${response.status}): ${await response.text()}`);
+    throw new AIRequestError(`AI API request failed (${response.status}): ${await response.text()}`, response.status);
   }
 
   const data = await response.json();
@@ -138,17 +137,39 @@ function extractJsonArray(rawText) {
   return parsed;
 }
 
-async function main() {
-  if (!process.env.AI_API_KEY) {
+async function generateBulletsText(systemPrompt, userPrompt) {
+  const apiKeys = getApiKeys();
+  if (apiKeys.length === 0) {
     throw new Error("AI_API_KEY is required.");
   }
 
+  const configuredModel = process.env.AI_MODEL;
+  const models = configuredModel
+    ? [configuredModel, ...GEMINI_MODEL_FALLBACKS.filter((model) => model !== configuredModel)]
+    : GEMINI_MODEL_FALLBACKS;
+
+  let lastError;
+  for (const model of models) {
+    for (const apiKey of apiKeys) {
+      try {
+        return await callGemini(systemPrompt, userPrompt, model, apiKey);
+      } catch (error) {
+        lastError = error;
+        if (!(error instanceof AIRequestError) || !isRetryableStatus(error.status)) {
+          throw error;
+        }
+        // Overloaded/rate-limited: fall through and retry with the next key,
+        // then the next model once all keys for this model are exhausted.
+      }
+    }
+  }
+
+  throw lastError;
+}
+
+async function main() {
   const { system, user } = buildPrompt();
-  const provider = process.env.AI_PROVIDER || "github-models";
-
-  const rawText =
-    provider === "gemini" ? await callGemini(system, user) : await callGithubModels(system, user);
-
+  const rawText = await generateBulletsText(system, user);
   const bullets = extractJsonArray(rawText);
 
   const outputPath = path.join(process.cwd(), process.env.BULLETS_FILE || "bullets.json");

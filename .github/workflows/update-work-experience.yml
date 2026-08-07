@@ -49,8 +49,6 @@ jobs:
       - name: Generate AI resume bullet points
         env:
           AI_API_KEY: ${{ secrets.AI_API_KEY }}
-          AI_PROVIDER: ${{ vars.AI_PROVIDER }}
-          AI_API_URL: ${{ vars.AI_API_URL }}
           AI_MODEL: ${{ vars.AI_MODEL }}
           PROMPT_MODE: work
         run: node scripts/generate-bullets.js
