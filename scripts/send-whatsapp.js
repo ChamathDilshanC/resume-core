@@ -1,6 +1,8 @@
 const fs = require("fs");
 
 const GRAPH_API_VERSION = "v21.0";
+const TEMPLATE_NAME = process.env.WHATSAPP_TEMPLATE_NAME || "resume_pdf_update";
+const TEMPLATE_LANGUAGE = process.env.WHATSAPP_TEMPLATE_LANGUAGE || "en_US";
 
 async function uploadMedia(phoneNumberId, token, filePath) {
   const form = new FormData();
@@ -21,7 +23,11 @@ async function uploadMedia(phoneNumberId, token, filePath) {
   return data.id;
 }
 
-async function sendDocument(phoneNumberId, token, recipient, mediaId) {
+// A plain "document" message only delivers within 24h of the recipient's
+// last message to the business number (WhatsApp's session-message rule) —
+// useless for an unattended pipeline run. A pre-approved template message
+// bypasses that window, which is the whole point of templates.
+async function sendTemplateDocument(phoneNumberId, token, recipient, mediaId) {
   const response = await fetch(`https://graph.facebook.com/${GRAPH_API_VERSION}/${phoneNumberId}/messages`, {
     method: "POST",
     headers: {
@@ -31,11 +37,16 @@ async function sendDocument(phoneNumberId, token, recipient, mediaId) {
     body: JSON.stringify({
       messaging_product: "whatsapp",
       to: recipient,
-      type: "document",
-      document: {
-        id: mediaId,
-        filename: "resume.pdf",
-        caption: "Your resume has just been updated.",
+      type: "template",
+      template: {
+        name: TEMPLATE_NAME,
+        language: { code: TEMPLATE_LANGUAGE },
+        components: [
+          {
+            type: "header",
+            parameters: [{ type: "document", document: { id: mediaId, filename: "resume.pdf" } }],
+          },
+        ],
       },
     }),
   });
@@ -56,7 +67,7 @@ async function main() {
   if (!recipient) throw new Error("RECIPIENT_PHONE_NUMBER is required.");
 
   const mediaId = await uploadMedia(phoneNumberId, token, filePath);
-  await sendDocument(phoneNumberId, token, recipient, mediaId);
+  await sendTemplateDocument(phoneNumberId, token, recipient, mediaId);
 
   console.log(`Sent ${filePath} to WhatsApp ${recipient} (media id ${mediaId}).`);
 }

@@ -154,7 +154,11 @@ file's shareable link never changes.
 ### WhatsApp delivery
 
 `scripts/send-whatsapp.js` uploads `resume.pdf` to Meta's Graph API as media,
-then sends it as a document message to `RECIPIENT_PHONE_NUMBER`.
+then sends it via a pre-approved **message template** with a document header
+to `RECIPIENT_PHONE_NUMBER`. It has to be a template, not a plain document
+message — WhatsApp only allows free-form messages within 24h of the
+recipient's last message to the business number, which an unattended
+pipeline run will never satisfy. Templates are exempt from that window.
 
 1. Create an app at [developers.facebook.com](https://developers.facebook.com/)
    → add the **WhatsApp** product.
@@ -170,6 +174,20 @@ then sends it as a document message to `RECIPIENT_PHONE_NUMBER`.
    `RECIPIENT_PHONE_NUMBER` under WhatsApp → API Setup → "To" → **Manage
    phone number list**, and accept the invite Meta sends to that number —
    otherwise every send silently 400s with "recipient not in allowed list."
+4. **Create the template** — Meta Business Manager → WhatsApp Manager →
+   Message Templates → Create Template:
+   - Category: **Utility**
+   - Name: `resume_pdf_update` (must match exactly — this is what the script
+     sends; override with a `WHATSAPP_TEMPLATE_NAME` repo variable if you use
+     a different name)
+   - Language: **English (US)**
+   - Header type: **Document** (you'll be asked to upload a sample PDF just
+     for the review preview — any PDF works, it's not the one actually sent)
+   - Body: e.g. "Your resume has just been updated. Please find the latest
+     version attached."
+   - Submit for review. Utility templates are usually approved within
+     minutes, occasionally up to 24h — check its status is **Active** in
+     WhatsApp Manager before expecting sends to succeed.
 
 ### 2. Each tracked project repository
 
