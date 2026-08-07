@@ -11,7 +11,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  regenerate-pdf:
+  generate:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout resume-core
@@ -44,11 +44,63 @@ jobs:
           RESUME_JSON_PATH: ${{ github.workspace }}/data/resume.json
         run: node generate-pdf.js
 
+      - name: Upload resume.pdf artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: resume-pdf
+          path: resume.pdf
+          retention-days: 1
+
+  upload-to-drive:
+    needs: generate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout resume-core
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Download resume.pdf artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: resume-pdf
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        env:
+          # This job only needs googleapis, not puppeteer's headless Chrome.
+          PUPPETEER_SKIP_DOWNLOAD: "true"
+        run: npm ci
+
       - name: Upload resume.pdf to Google Drive
         env:
           GDRIVE_CREDENTIALS: ${{ secrets.GDRIVE_CREDENTIALS }}
           GDRIVE_FILE_ID: ${{ secrets.GDRIVE_FILE_ID }}
         run: node scripts/upload-to-drive.js
+
+  send-whatsapp:
+    needs: upload-to-drive
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout resume-core
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Download resume.pdf artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: resume-pdf
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
 
       - name: Send resume.pdf via WhatsApp
         env:
