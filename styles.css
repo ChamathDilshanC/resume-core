@@ -30,6 +30,7 @@ a {
 .project-item,
 .work-item {
   page-break-inside: avoid;
+  break-inside: avoid;
 }
 
 /* Header */
@@ -88,6 +89,8 @@ a {
 /* Sections */
 .section {
   margin-bottom: 13px;
+  page-break-inside: avoid;
+  break-inside: avoid;
 }
 
 .section-title {
