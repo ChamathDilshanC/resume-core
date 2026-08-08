@@ -101,7 +101,7 @@ a {
   color: #111827;
   border-bottom: 1.4px solid #1a1a1a;
   padding-bottom: 3px;
-  margin-bottom: 7px;
+  margin: 0 0 7px;
 }
 
 .summary {
@@ -120,6 +120,11 @@ a {
   justify-content: space-between;
   align-items: baseline;
   flex-wrap: wrap;
+}
+
+.item-heading {
+  margin: 0;
+  font-size: inherit;
 }
 
 .item-role {
@@ -159,8 +164,8 @@ a {
 
 ul.highlights {
   margin: 4px 0 0;
-  padding-left: 0;
-  list-style: none;
+  padding-left: 16px;
+  list-style: disc;
 }
 
 ul.highlights li {
@@ -168,29 +173,11 @@ ul.highlights li {
   font-size: 10pt;
 }
 
-.work-item ul.highlights,
-.project-item ul.highlights {
-  padding-left: 14px;
-}
-
-.work-item ul.highlights li,
-.project-item ul.highlights li {
-  position: relative;
-  padding-left: 4px;
-}
-
-.work-item ul.highlights li::before,
-.project-item ul.highlights li::before {
-  content: "-";
-  position: absolute;
-  left: -14px;
-  color: #1a1a1a;
-}
-
 /* Simple lists: skills, certificates, education, references */
 ul.simple-list {
   margin: 0;
   padding-left: 16px;
+  list-style: disc;
 }
 
 ul.simple-list li {

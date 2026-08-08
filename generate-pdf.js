@@ -14,9 +14,29 @@ Handlebars.registerHelper("joinList", function (list) {
   return list.join(", ");
 });
 
+// ATS-friendly date formatting: "2026-01" -> "Jan 2026", "2026" -> "2026".
+const MONTH_NAMES = [
+  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+];
+
+function formatDateString(value) {
+  const trimmed = (value || "").trim();
+  const monthYear = trimmed.match(/^(\d{4})-(\d{1,2})$/);
+  if (monthYear) {
+    const monthIndex = Number(monthYear[2]) - 1;
+    if (monthIndex >= 0 && monthIndex < 12) {
+      return `${MONTH_NAMES[monthIndex]} ${monthYear[1]}`;
+    }
+  }
+  const yearOnly = trimmed.match(/^(\d{4})$/);
+  if (yearOnly) return yearOnly[1];
+  return trimmed;
+}
+
 Handlebars.registerHelper("dateRange", function (startDate, endDate) {
-  const start = (startDate || "").trim();
-  const end = (endDate || "").trim();
+  const start = formatDateString(startDate);
+  const end = formatDateString(endDate);
   if (!start && !end) return "";
   if (start && end) return `${start} - ${end}`;
   return start || end;
@@ -57,7 +77,10 @@ async function generateResumePdf() {
   resumeData.basics.image = await resolveImageToDataUri(resumeData.basics.image);
 
   const template = Handlebars.compile(templateSource);
-  const html = template({ ...resumeData, styles: stylesSource });
+  const html = template(resumeData).replace(
+    /<!--\s*INLINE_STYLES\s*-->/,
+    () => `<style>${stylesSource}</style>`
+  );
 
   const browser = await puppeteer.launch({
     headless: true,

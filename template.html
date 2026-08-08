@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <title>{{basics.name}} - Resume</title>
-<style>{{{styles}}}</style>
+<!-- INLINE_STYLES -->
 </head>
 <body>
 
@@ -26,14 +26,14 @@
 
   {{#if basics.summary}}
   <div class="section">
-    <div class="section-title">Professional Summary</div>
+    <h2 class="section-title">Professional Summary</h2>
     <p class="summary">{{basics.summary}}</p>
   </div>
   {{/if}}
 
   {{#if skills.length}}
   <div class="section">
-    <div class="section-title">Technical Skills</div>
+    <h2 class="section-title">Technical Skills</h2>
     <ul class="simple-list">
       {{#each skills}}
       <li><b>{{this.name}}:</b> {{joinList this.keywords}}</li>
@@ -46,9 +46,9 @@
   <div class="section">
     {{#each work}}
     <div class="work-item">
-      {{#if @first}}<div class="section-title">Work Experience</div>{{/if}}
+      {{#if @first}}<h2 class="section-title">Work Experience</h2>{{/if}}
       <div class="item-header">
-        <span class="item-heading"><span class="item-role">{{this.position}}</span>{{#if this.name}} <span class="item-title">| {{#if this.url}}<a href="{{this.url}}">{{this.name}}</a>{{else}}{{this.name}}{{/if}}{{#if this.endDate}}{{#unless this.startDate}} | {{this.endDate}}{{/unless}}{{/if}}</span>{{/if}}</span>
+        <h3 class="item-heading"><span class="item-role">{{this.position}}</span>{{#if this.name}} <span class="item-title">| {{#if this.url}}<a href="{{this.url}}">{{this.name}}</a>{{else}}{{this.name}}{{/if}}{{#if this.endDate}}{{#unless this.startDate}} | {{this.endDate}}{{/unless}}{{/if}}</span>{{/if}}</h3>
         {{#if this.startDate}}<span class="item-dates">{{dateRange this.startDate this.endDate}}</span>{{/if}}
       </div>
       {{#if this.highlights.length}}
@@ -67,9 +67,9 @@
   <div class="section">
     {{#each projects}}
     <div class="project-item">
-      {{#if @first}}<div class="section-title">Key Projects</div>{{/if}}
+      {{#if @first}}<h2 class="section-title">Key Projects</h2>{{/if}}
       <div class="item-header">
-        <span class="item-heading"><span class="item-role">{{this.name}}</span>{{#if this.description}} <span class="item-description">&mdash; {{this.description}}</span>{{/if}}</span>
+        <h3 class="item-heading"><span class="item-role">{{this.name}}</span>{{#if this.description}} <span class="item-description">&mdash; {{this.description}}</span>{{/if}}</h3>
       </div>
       {{#if this.links.length}}
       <div class="item-links">Project Link{{#if (gt this.links.length 1)}}s{{/if}}:
@@ -90,7 +90,7 @@
 
   {{#if certificates.length}}
   <div class="section">
-    <div class="section-title">Certifications</div>
+    <h2 class="section-title">Certifications</h2>
     <ul class="simple-list">
       {{#each certificates}}
       <li>{{#if this.url}}<a href="{{this.url}}">{{this.name}}</a>{{else}}{{this.name}}{{/if}}{{#if this.issuer}} &mdash; {{this.issuer}}{{/if}}{{#if this.date}} ({{this.date}}){{/if}}</li>
@@ -101,7 +101,7 @@
 
   {{#if education.length}}
   <div class="section">
-    <div class="section-title">Education</div>
+    <h2 class="section-title">Education</h2>
     <ul class="simple-list">
       {{#each education}}
       <li>{{this.studyType}}{{#if this.area}} in {{this.area}}{{/if}} | {{this.institution}}{{#if (dateRange this.startDate this.endDate)}} | {{dateRange this.startDate this.endDate}}{{/if}}</li>
@@ -112,7 +112,7 @@
 
   {{#if references.length}}
   <div class="section">
-    <div class="section-title">References</div>
+    <h2 class="section-title">References</h2>
     <ul class="simple-list">
       {{#each references}}
       <li>{{this.name}} | {{this.reference}}</li>
