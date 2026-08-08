@@ -25,7 +25,7 @@
   </div>
 
   {{#if basics.summary}}
-  <div class="section">
+  <div class="section section-atomic">
     <h2 class="section-title">Professional Summary</h2>
     <p class="summary">{{basics.summary}}</p>
   </div>
@@ -53,7 +53,7 @@
   {{/if}}
 
   {{#if skills.length}}
-  <div class="section">
+  <div class="section section-atomic">
     <h2 class="section-title">Technical Skills</h2>
     <ul class="simple-list">
       {{#each skills}}
@@ -89,7 +89,7 @@
   {{/if}}
 
   {{#if certificates.length}}
-  <div class="section">
+  <div class="section section-atomic">
     <h2 class="section-title">Certifications</h2>
     <ul class="simple-list">
       {{#each certificates}}
@@ -100,7 +100,7 @@
   {{/if}}
 
   {{#if education.length}}
-  <div class="section">
+  <div class="section section-atomic">
     <h2 class="section-title">Education</h2>
     <ul class="simple-list">
       {{#each education}}
@@ -111,7 +111,7 @@
   {{/if}}
 
   {{#if references.length}}
-  <div class="section">
+  <div class="section section-atomic">
     <h2 class="section-title">References</h2>
     <ul class="simple-list">
       {{#each references}}

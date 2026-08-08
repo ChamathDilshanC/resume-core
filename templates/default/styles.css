@@ -91,6 +91,14 @@ a {
   margin-bottom: 13px;
 }
 
+/* Short sections (skills, certifications, ...) never split across pages:
+   if the full block does not fit, heading + content move to the next page
+   together. Long sections (work, projects) flow normally instead. */
+.section-atomic {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
 .section-title {
   font-size: 12.5pt;
   font-weight: 700;
