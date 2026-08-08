@@ -89,8 +89,6 @@ a {
 /* Sections */
 .section {
   margin-bottom: 13px;
-  page-break-inside: avoid;
-  break-inside: avoid;
 }
 
 .section-title {
