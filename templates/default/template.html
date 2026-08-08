@@ -31,17 +31,6 @@
   </div>
   {{/if}}
 
-  {{#if skills.length}}
-  <div class="section">
-    <h2 class="section-title">Technical Skills</h2>
-    <ul class="simple-list">
-      {{#each skills}}
-      <li><b>{{this.name}}:</b> {{joinList this.keywords}}</li>
-      {{/each}}
-    </ul>
-  </div>
-  {{/if}}
-
   {{#if work.length}}
   <div class="section">
     {{#each work}}
@@ -60,6 +49,17 @@
       {{/if}}
     </div>
     {{/each}}
+  </div>
+  {{/if}}
+
+  {{#if skills.length}}
+  <div class="section">
+    <h2 class="section-title">Technical Skills</h2>
+    <ul class="simple-list">
+      {{#each skills}}
+      <li><b>{{this.name}}:</b> {{joinList this.keywords}}</li>
+      {{/each}}
+    </ul>
   </div>
   {{/if}}
 

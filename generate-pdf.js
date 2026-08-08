@@ -5,8 +5,8 @@ const puppeteer = require("puppeteer");
 
 const ROOT = __dirname;
 const RESUME_JSON_PATH = process.env.RESUME_JSON_PATH || path.join(ROOT, "data", "resume.json");
-const TEMPLATE_PATH = path.join(ROOT, "template.html");
-const STYLES_PATH = path.join(ROOT, "styles.css");
+const TEMPLATES_DIR = path.join(ROOT, "templates");
+const DEFAULT_TEMPLATE = "default";
 const OUTPUT_PDF_PATH = path.join(ROOT, "resume.pdf");
 
 Handlebars.registerHelper("joinList", function (list) {
@@ -14,7 +14,7 @@ Handlebars.registerHelper("joinList", function (list) {
   return list.join(", ");
 });
 
-// ATS-friendly date formatting: "2026-01" -> "Jan 2026", "2026" -> "2026".
+// ATS-friendly date formatting: "2026-01" -> "Jan 2026", "2026-01-01" -> "Jan 2026", "2026" -> "2026".
 const MONTH_NAMES = [
   "Jan", "Feb", "Mar", "Apr", "May", "Jun",
   "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
@@ -22,6 +22,13 @@ const MONTH_NAMES = [
 
 function formatDateString(value) {
   const trimmed = (value || "").trim();
+  const fullDate = trimmed.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+  if (fullDate) {
+    const monthIndex = Number(fullDate[2]) - 1;
+    if (monthIndex >= 0 && monthIndex < 12) {
+      return `${MONTH_NAMES[monthIndex]} ${fullDate[1]}`;
+    }
+  }
   const monthYear = trimmed.match(/^(\d{4})-(\d{1,2})$/);
   if (monthYear) {
     const monthIndex = Number(monthYear[2]) - 1;
@@ -71,8 +78,14 @@ async function resolveImageToDataUri(imagePath) {
 
 async function generateResumePdf() {
   const resumeData = await fs.readJson(RESUME_JSON_PATH);
-  const templateSource = await fs.readFile(TEMPLATE_PATH, "utf8");
-  const stylesSource = await fs.readFile(STYLES_PATH, "utf8");
+
+  const templateName = resumeData.template || process.env.RESUME_TEMPLATE || DEFAULT_TEMPLATE;
+  const templateDir = path.join(TEMPLATES_DIR, templateName);
+  if (!(await fs.pathExists(path.join(templateDir, "template.html")))) {
+    throw new Error(`Unknown template "${templateName}" — no templates/${templateName}/template.html found.`);
+  }
+  const templateSource = await fs.readFile(path.join(templateDir, "template.html"), "utf8");
+  const stylesSource = await fs.readFile(path.join(templateDir, "styles.css"), "utf8");
 
   resumeData.basics.image = await resolveImageToDataUri(resumeData.basics.image);
 
