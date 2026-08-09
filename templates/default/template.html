@@ -12,7 +12,7 @@
     <h1 class="name">{{basics.name}}</h1>
     <p class="label">{{basics.label}}</p>
     <div class="contact">
-      {{#if basics.location.city}}<span>{{basics.location.city}}, Sri Lanka</span>{{/if}}
+      {{#if basics.location.city}}<span>{{basics.location.city}}{{#if basics.location.countryCode}}, {{countryName basics.location.countryCode}}{{/if}}</span>{{/if}}
       {{#if basics.phone}}<span>&bull; {{basics.phone}}</span>{{/if}}
       {{#if basics.email}}<span>&bull; {{basics.email}}</span>{{/if}}
     </div>
