@@ -8,6 +8,7 @@ const RESUME_JSON_PATH = process.env.RESUME_JSON_PATH || path.join(ROOT, "data",
 const TEMPLATES_DIR = path.join(ROOT, "templates");
 const DEFAULT_TEMPLATE = "default";
 const OUTPUT_PDF_PATH = path.join(ROOT, "resume.pdf");
+const OUTPUT_NAME_PATH = path.join(ROOT, "resume-name.txt");
 
 Handlebars.registerHelper("joinList", function (list) {
   if (!Array.isArray(list)) return "";
@@ -93,6 +94,22 @@ async function resolveImageToDataUri(imagePath) {
   return `data:${mimeType};base64,${buffer.toString("base64")}`;
 }
 
+// Human-facing filename used by the delivery channels (Drive, email,
+// WhatsApp): "<Name> <Label> Resume.pdf", e.g. "Chamath Dilshan Intern
+// DevOps Resume.pdf". The repo keeps the stable resume.pdf; the display
+// name travels alongside it in resume-name.txt.
+function pdfDisplayName(resumeData) {
+  const basics = resumeData.basics || {};
+  const name = String(basics.name || "")
+    .trim()
+    .toLowerCase()
+    .replace(/(^|\s)\S/g, (c) => c.toUpperCase());
+  const label = String(basics.label || "").trim();
+  const raw = [name, label, "Resume"].filter(Boolean).join(" ");
+  const safe = raw.replace(/[\\/:*?"<>|]/g, "").replace(/\s+/g, " ").trim();
+  return safe ? `${safe}.pdf` : "resume.pdf";
+}
+
 async function generateResumePdf() {
   const resumeData = await fs.readJson(RESUME_JSON_PATH);
 
@@ -130,7 +147,10 @@ async function generateResumePdf() {
     await browser.close();
   }
 
-  console.log(`Resume PDF generated at ${OUTPUT_PDF_PATH}`);
+  const displayName = pdfDisplayName(resumeData);
+  await fs.writeFile(OUTPUT_NAME_PATH, displayName, "utf8");
+
+  console.log(`Resume PDF generated at ${OUTPUT_PDF_PATH} (display name: ${displayName})`);
 }
 
 generateResumePdf().catch((error) => {

@@ -1,10 +1,23 @@
 const fs = require("fs");
 const { google } = require("googleapis");
 
+// "<Name> <Label> Resume.pdf" written by generate-pdf.js; the Drive file is
+// renamed to this on every upload so the stored file always carries the
+// current title.
+function readDisplayName(fallback = "resume.pdf") {
+  try {
+    const name = fs.readFileSync("resume-name.txt", "utf8").trim();
+    return name || fallback;
+  } catch {
+    return fallback;
+  }
+}
+
 async function main() {
   const fileId = process.env.GDRIVE_FILE_ID;
   const credentialsJson = process.env.GDRIVE_CREDENTIALS;
   const filePath = process.env.GDRIVE_UPLOAD_PATH || "resume.pdf";
+  const displayName = readDisplayName();
 
   if (!fileId) throw new Error("GDRIVE_FILE_ID is required.");
   if (!credentialsJson) throw new Error("GDRIVE_CREDENTIALS is required.");
@@ -28,13 +41,14 @@ async function main() {
   // shared with the service account as an Editor — see README.md.
   await drive.files.update({
     fileId,
+    resource: { name: displayName },
     media: {
       mimeType: "application/pdf",
       body: fs.createReadStream(filePath),
     },
   });
 
-  console.log(`Uploaded ${filePath} to Google Drive file ${fileId}.`);
+  console.log(`Uploaded ${filePath} to Google Drive file ${fileId} as "${displayName}".`);
 }
 
 main().catch((error) => {

@@ -48,7 +48,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: resume-pdf
-          path: resume.pdf
+          path: |
+            resume.pdf
+            resume-name.txt
           retention-days: 1
 
   upload-to-drive:
