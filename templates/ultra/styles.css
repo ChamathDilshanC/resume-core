@@ -1,0 +1,208 @@
+@page {
+  size: A4;
+  margin: 12mm 14mm;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+  font-size: 9.8pt;
+  line-height: 1.42;
+  color: #1f2328;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+a {
+  color: #0b57a4;
+  text-decoration: none;
+}
+
+.project-item,
+.work-item {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+/* Header: left text block + rounded photo, double rule underneath */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  border-bottom: 2.6px solid #0b57a4;
+  padding-bottom: 9px;
+  margin-bottom: 4px;
+}
+
+.header::after {
+  content: "";
+  display: block;
+}
+
+.header-main {
+  flex: 1;
+}
+
+.header .avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 12px;
+  object-fit: cover;
+  border: 1.6px solid #0b57a4;
+}
+
+.header .name {
+  font-size: 17pt;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  margin: 0;
+  color: #16202c;
+}
+
+.header .label {
+  font-size: 10.5pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.6px;
+  color: #0b57a4;
+  margin: 3px 0 6px;
+}
+
+.header .contact {
+  font-size: 9.3pt;
+  color: #3c4652;
+  margin: 0 0 2px;
+}
+
+.header .contact .sep {
+  margin-left: 5px;
+}
+
+/* Thin second rule below the thick accent rule */
+.header + .section {
+  border-top: 1px solid #c9d5e4;
+  padding-top: 9px;
+}
+
+/* Sections */
+.section {
+  margin-bottom: 12px;
+}
+
+/* Short sections (skills, certifications, ...) never split across pages:
+   if the full block does not fit, heading + content move to the next page
+   together. Long sections (work, projects) flow normally instead. */
+.section-atomic {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+.section-title {
+  font-size: 10.5pt;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #0b57a4;
+  border-bottom: 1px solid #c9d5e4;
+  padding-bottom: 2.5px;
+  margin: 0 0 6px;
+}
+
+.summary {
+  margin: 0;
+  font-size: 10pt;
+}
+
+/* Work / Project items */
+.work-item,
+.project-item {
+  margin-bottom: 8px;
+}
+
+.item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.item-heading {
+  margin: 0;
+  font-size: inherit;
+}
+
+.item-role {
+  font-size: 10.6pt;
+  font-weight: 700;
+  color: #16202c;
+}
+
+.item-title {
+  font-size: 10.2pt;
+  font-weight: 700;
+  color: #0b57a4;
+}
+
+.item-description {
+  font-size: 9.8pt;
+  font-weight: 400;
+  color: #1f2328;
+}
+
+.item-dates {
+  font-size: 9.3pt;
+  font-weight: 700;
+  color: #3c4652;
+  white-space: nowrap;
+}
+
+.item-links {
+  font-size: 9.2pt;
+  color: #3c4652;
+  margin-top: 1px;
+}
+
+.item-links a {
+  font-weight: 700;
+}
+
+ul.highlights {
+  margin: 3px 0 0;
+  padding-left: 15px;
+  list-style: disc;
+}
+
+ul.highlights li {
+  margin-bottom: 2px;
+  font-size: 9.8pt;
+}
+
+ul.highlights li::marker {
+  color: #0b57a4;
+}
+
+/* Simple lists: skills, certificates, education, references */
+ul.simple-list {
+  margin: 0;
+  padding-left: 15px;
+  list-style: disc;
+}
+
+ul.simple-list li {
+  font-size: 9.8pt;
+  margin-bottom: 3px;
+}
+
+ul.simple-list li::marker {
+  color: #0b57a4;
+}

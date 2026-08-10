@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>{{basics.name}} - Resume</title>
+<!-- INLINE_STYLES -->
+</head>
+<body>
+
+  <header class="header">
+    <div class="header-main">
+      <h1 class="name">{{basics.name}}</h1>
+      <p class="label">{{basics.label}}</p>
+      <p class="contact">
+        {{#if basics.location.city}}<span>{{basics.location.city}}{{#if basics.location.countryCode}}, {{countryName basics.location.countryCode}}{{/if}}</span>{{/if}}
+        {{#if basics.phone}}<span class="sep">&bull; {{basics.phone}}</span>{{/if}}
+        {{#if basics.email}}<span class="sep">&bull; {{basics.email}}</span>{{/if}}
+      </p>
+      <p class="contact">
+        {{#if basics.url}}<span>Portfolio: <a href="{{basics.url}}">{{stripProtocol basics.url}}</a></span>{{/if}}
+        {{#each basics.profiles}}
+          <span class="sep">&bull; {{this.network}}: {{#if this.url}}<a href="{{this.url}}">{{this.username}}</a>{{else}}{{this.username}}{{/if}}</span>
+        {{/each}}
+      </p>
+    </div>
+    {{#if basics.image}}<img class="avatar" src="{{basics.image}}" alt="{{basics.name}}" />{{/if}}
+  </header>
+
+  {{#if basics.summary}}
+  <div class="section section-atomic">
+    <h2 class="section-title">Professional Summary</h2>
+    <p class="summary">{{basics.summary}}</p>
+  </div>
+  {{/if}}
+
+  {{#if work.length}}
+  <div class="section">
+    {{#each work}}
+    <div class="work-item">
+      {{#if @first}}<h2 class="section-title">Work Experience</h2>{{/if}}
+      <div class="item-header">
+        <h3 class="item-heading"><span class="item-role">{{this.position}}</span>{{#if this.name}} <span class="item-title">&mdash; {{#if this.url}}<a href="{{this.url}}">{{this.name}}</a>{{else}}{{this.name}}{{/if}}</span>{{/if}}</h3>
+        {{#if this.startDate}}<span class="item-dates">{{dateRange this.startDate this.endDate}}</span>{{/if}}
+      </div>
+      {{#if this.highlights.length}}
+      <ul class="highlights">
+        {{#each this.highlights}}
+        <li>{{this}}</li>
+        {{/each}}
+      </ul>
+      {{/if}}
+    </div>
+    {{/each}}
+  </div>
+  {{/if}}
+
+  {{#if skills.length}}
+  <div class="section section-atomic">
+    <h2 class="section-title">Technical Skills</h2>
+    <ul class="simple-list">
+      {{#each skills}}
+      <li><b>{{this.name}}:</b> {{joinList this.keywords}}</li>
+      {{/each}}
+    </ul>
+  </div>
+  {{/if}}
+
+  {{#if projects.length}}
+  <div class="section">
+    {{#each projects}}
+    <div class="project-item">
+      {{#if @first}}<h2 class="section-title">Key Projects</h2>{{/if}}
+      <div class="item-header">
+        <h3 class="item-heading"><span class="item-role">{{this.name}}</span>{{#if this.description}} <span class="item-description">&mdash; {{this.description}}</span>{{/if}}</h3>
+      </div>
+      {{#if this.links.length}}
+      <div class="item-links">Project Link{{#if (gt this.links.length 1)}}s{{/if}}:
+        {{#each this.links}}{{#unless @first}} | {{/unless}}<a href="{{this.url}}">{{this.label}}</a>{{/each}}
+      </div>
+      {{/if}}
+      {{#if this.highlights.length}}
+      <ul class="highlights">
+        {{#each this.highlights}}
+        <li>{{this}}</li>
+        {{/each}}
+      </ul>
+      {{/if}}
+    </div>
+    {{/each}}
+  </div>
+  {{/if}}
+
+  {{#if certificates.length}}
+  <div class="section section-atomic">
+    <h2 class="section-title">Certifications</h2>
+    <ul class="simple-list">
+      {{#each certificates}}
+      <li>{{#if this.url}}<a href="{{this.url}}">{{this.name}}</a>{{else}}{{this.name}}{{/if}}{{#if this.issuer}} &mdash; {{this.issuer}}{{/if}}{{#if this.date}} ({{this.date}}){{/if}}</li>
+      {{/each}}
+    </ul>
+  </div>
+  {{/if}}
+
+  {{#if education.length}}
+  <div class="section section-atomic">
+    <h2 class="section-title">Education</h2>
+    <ul class="simple-list">
+      {{#each education}}
+      <li>{{this.studyType}}{{#if this.area}} in {{this.area}}{{/if}} | {{this.institution}}{{#if (dateRange this.startDate this.endDate)}} | {{dateRange this.startDate this.endDate}}{{/if}}</li>
+      {{/each}}
+    </ul>
+  </div>
+  {{/if}}
+
+  {{#if references.length}}
+  <div class="section section-atomic">
+    <h2 class="section-title">References</h2>
+    <ul class="simple-list">
+      {{#each references}}
+      <li>{{this.name}} | {{this.reference}}</li>
+      {{/each}}
+    </ul>
+  </div>
+  {{/if}}
+
+</body>
+</html>
