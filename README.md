@@ -131,7 +131,7 @@ it (see **One-time setup** below).
     international format with no `+` or leading zeros (e.g. `9477xxxxxxx`).
 - **Settings → Secrets and variables → Actions → Variables** *(optional)*:
   - `AI_MODEL` — override the first Gemini model tried (falls back through
-    `gemini-flash-latest` → `gemini-2.5-flash` → `gemini-2.5-flash-lite`
+    `gemini-flash-latest` → `gemini-flash-lite-latest` → `gemini-3.6-flash`
     regardless).
 
 ### Google Drive upload

@@ -82,16 +82,22 @@ class AIRequestError extends Error {
   }
 }
 
-// 503 = model overloaded ("high demand"), 429 = per-key rate/quota limited.
-// Both are worth retrying against a different model or key rather than
-// failing the whole pipeline run.
+// 503 = model overloaded ("high demand"), 429 = per-key rate/quota limited,
+// 404 = model retired/not available to this key ("no longer available to new
+// users" — availability is gated per-account, not just a global shutdown, so
+// a different key can genuinely succeed here too). All three are worth
+// retrying against a different model or key rather than failing the whole
+// pipeline run.
 function isRetryableStatus(status) {
-  return status === 503 || status === 429;
+  return status === 503 || status === 429 || status === 404;
 }
 
-// Gemini 1.5 and 2.0 model families were shut down during 2026 — only the
-// 2.5+/3.x families are still live on v1beta. Cheapest/fastest first.
-const GEMINI_MODEL_FALLBACKS = ["gemini-flash-latest", "gemini-2.5-flash", "gemini-2.5-flash-lite"];
+// Prefer the "-latest" aliases: Google hot-swaps them to the newest release
+// within that model family (with a 2-week deprecation notice), so they don't
+// go stale the way a pinned version does — gemini-2.5-flash/flash-lite, the
+// previous pins here, were retired for new users during 2026. Keep one
+// concrete pin last in case both aliases have a simultaneous outage.
+const GEMINI_MODEL_FALLBACKS = ["gemini-flash-latest", "gemini-flash-lite-latest", "gemini-3.6-flash"];
 
 // AI_API_KEY may hold a single key or a comma-separated list. Multiple keys
 // (e.g. from separate Google accounts) let us hop to a fresh quota when one
