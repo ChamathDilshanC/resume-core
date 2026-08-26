@@ -194,18 +194,29 @@ async function main() {
     if (knownSubmodules.has(repo.name)) continue;
 
     const topics = repo.topics || [];
-    if (topics.includes("resume-project")) continue;
+    const alreadyTagged = topics.includes("resume-project");
 
     const isMetaRepo = await hasGitmodules(owner, repo.name, token);
     if (!isMetaRepo) continue;
 
-    console.log(`Found untracked meta-repo: ${repo.name} — adding resume-project topic.`);
-    await addResumeProjectTopic(owner, repo.name, topics, token);
+    // A repo can already carry the "resume-project" topic without being
+    // fully wired — e.g. someone added the topic by hand on GitHub instead
+    // of letting this script discover it. Topic presence alone used to be
+    // treated as "already wired" and skipped outright, silently leaving
+    // notify-resume.yml (and the PAT secret prompt) missing forever.
+    if (!alreadyTagged) {
+      console.log(`Found untracked meta-repo: ${repo.name} — adding resume-project topic.`);
+      await addResumeProjectTopic(owner, repo.name, topics, token);
+    }
 
     const workflowAdded = await commitNotifierWorkflow(owner, repo.name, resumeCoreOwner, resumeCoreRepo, token);
-    if (workflowAdded) {
-      console.log(`  -> committed notify-resume.yml to ${repo.name}`);
-    }
+    if (!workflowAdded) continue; // already fully wired — nothing left to do
+
+    console.log(
+      alreadyTagged
+        ? `  -> "${repo.name}" already had the resume-project topic but was missing notify-resume.yml — committed it now.`
+        : `  -> committed notify-resume.yml to ${repo.name}`
+    );
 
     newlyWired.push(repo.name);
     missingSecret.push(repo.name);
