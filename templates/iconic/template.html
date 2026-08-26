@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>{{basics.name}} - Resume</title>
+<!-- INLINE_STYLES -->
+</head>
+<body>
+
+  <header class="header">
+    {{#if basics.image}}<img class="avatar" src="{{basics.image}}" alt="{{basics.name}}" />{{/if}}
+    <h1 class="name">{{basics.name}}</h1>
+    {{#if basics.label}}<p class="label">{{basics.label}}</p>{{/if}}
+  </header>
+
+  {{#if basics.summary}}
+  <div class="section section-atomic">
+    <h2 class="section-title">Professional Summary</h2>
+    <p class="summary">{{basics.summary}}</p>
+  </div>
+  {{/if}}
+
+  <div class="section section-atomic">
+    <h2 class="section-title">Contact Information</h2>
+    <ul class="contact-grid">
+      {{#if basics.phone}}
+      <li class="contact-row"><span class="contact-icon">{{{icon "phone"}}}</span><span class="contact-text"><b>Phone:</b> {{basics.phone}}</span></li>
+      {{/if}}
+      {{#if basics.email}}
+      <li class="contact-row"><span class="contact-icon">{{{icon "mail"}}}</span><span class="contact-text"><b>Email:</b> <a href="mailto:{{basics.email}}">{{basics.email}}</a></span></li>
+      {{/if}}
+      {{#if basics.url}}
+      <li class="contact-row"><span class="contact-icon">{{{icon "user"}}}</span><span class="contact-text"><b>Personal Website:</b> <a href="{{basics.url}}">{{stripProtocol basics.url}}</a></span></li>
+      {{/if}}
+      {{#each basics.profiles}}
+      <li class="contact-row"><span class="contact-icon">{{{icon this.network}}}</span><span class="contact-text"><b>{{this.network}}:</b> {{#if this.url}}<a href="{{this.url}}">{{this.username}}</a>{{else}}{{this.username}}{{/if}}</span></li>
+      {{/each}}
+      {{#if basics.location.city}}
+      <li class="contact-row"><span class="contact-icon">{{{icon "home"}}}</span><span class="contact-text"><b>Address:</b> {{basics.location.city}}{{#if basics.location.countryCode}}, {{countryName basics.location.countryCode}}{{/if}}</span></li>
+      {{/if}}
+    </ul>
+  </div>
+
+  {{#if work.length}}
+  <div class="section">
+    {{#each work}}
+    <div class="work-item">
+      {{#if @first}}<h2 class="section-title">Work Experience</h2>{{/if}}
+      <div class="item-header">
+        <h3 class="item-heading"><span class="item-role">{{this.position}}</span>{{#if this.name}} <span class="item-title">| {{#if this.url}}<a href="{{this.url}}">{{this.name}}</a>{{else}}{{this.name}}{{/if}}</span>{{/if}}</h3>
+        {{#if this.startDate}}<span class="item-dates">{{dateRange this.startDate this.endDate}}</span>{{/if}}
+      </div>
+      {{#if this.highlights.length}}
+      <ul class="highlights">
+        {{#each this.highlights}}
+        <li>{{this}}</li>
+        {{/each}}
+      </ul>
+      {{/if}}
+    </div>
+    {{/each}}
+  </div>
+  {{/if}}
+
+  {{#if skills.length}}
+  <div class="section section-atomic">
+    <h2 class="section-title">Areas of Expertise</h2>
+    <ul class="simple-list">
+      {{#each skills}}
+      <li><b>{{this.name}}:</b> {{joinList this.keywords}}</li>
+      {{/each}}
+    </ul>
+  </div>
+  {{/if}}
+
+  {{#if certificates.length}}
+  <div class="section section-atomic">
+    <h2 class="section-title">Certifications</h2>
+    <ul class="simple-list">
+      {{#each certificates}}
+      <li>{{#if this.url}}<a href="{{this.url}}">{{this.name}}</a>{{else}}{{this.name}}{{/if}}{{#if this.issuer}} &mdash; {{this.issuer}}{{/if}}{{#if this.date}} ({{this.date}}){{/if}}</li>
+      {{/each}}
+    </ul>
+  </div>
+  {{/if}}
+
+  {{#if education.length}}
+  <div class="section section-atomic">
+    <h2 class="section-title">Education</h2>
+    <ul class="simple-list">
+      {{#each education}}
+      <li>{{this.studyType}}{{#if this.area}} in {{this.area}}{{/if}} | {{this.institution}}{{#if (dateRange this.startDate this.endDate)}} | {{dateRange this.startDate this.endDate}}{{/if}}</li>
+      {{/each}}
+    </ul>
+  </div>
+  {{/if}}
+
+  {{#if projects.length}}
+  <div class="section">
+    {{#each projects}}
+    <div class="project-item">
+      {{#if @first}}<h2 class="section-title">Projects</h2>{{/if}}
+      <div class="item-header">
+        <h3 class="item-heading"><span class="item-role">{{this.name}}</span>{{#if this.description}} <span class="item-description">&mdash; {{this.description}}</span>{{/if}}</h3>
+      </div>
+      {{#if this.links.length}}
+      <div class="item-links">Project Link{{#if (gt this.links.length 1)}}s{{/if}}:
+        {{#each this.links}}{{#unless @first}} | {{/unless}}<a href="{{this.url}}">{{this.label}}</a>{{/each}}
+      </div>
+      {{/if}}
+      {{#if this.highlights.length}}
+      <ul class="highlights">
+        {{#each this.highlights}}
+        <li>{{this}}</li>
+        {{/each}}
+      </ul>
+      {{/if}}
+    </div>
+    {{/each}}
+  </div>
+  {{/if}}
+
+  {{#if references.length}}
+  <div class="section section-atomic">
+    <h2 class="section-title">References</h2>
+    <ul class="simple-list">
+      {{#each references}}
+      <li>{{this.name}} | {{this.reference}}</li>
+      {{/each}}
+    </ul>
+  </div>
+  {{/if}}
+
+  <div class="section section-atomic declaration">
+    <p>I hereby certify that the above particulars given by me are true and accurate to the best of my knowledge. If given the opportunity to serve in your esteemed organization, I assure you that I shall perform my duties with commitment and loyalty.</p>
+    <p class="signature">Yours Faithfully,<br />{{basics.name}}</p>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,229 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap');
+
+@page {
+  size: A4;
+  margin: 12mm 15mm;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+  font-size: 9.8pt;
+  line-height: 1.42;
+  color: #1f2328;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+a {
+  color: #1d4ed8;
+  text-decoration: none;
+}
+
+.project-item,
+.work-item {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+/* Header: centered photo + Montserrat name */
+.header {
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.header .avatar {
+  width: 86px;
+  height: 86px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 8px;
+}
+
+.header .name {
+  font-family: "Montserrat", Arial, sans-serif;
+  font-size: 20pt;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  margin: 0;
+  color: #111827;
+}
+
+.header .label {
+  font-family: "Montserrat", Arial, sans-serif;
+  font-size: 10.5pt;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.6px;
+  color: #1d4ed8;
+  margin: 4px 0 0;
+}
+
+/* Sections */
+.section {
+  margin-bottom: 12px;
+}
+
+/* Short sections (contact, skills, ...) never split across pages: if the
+   full block does not fit, heading + content move to the next page
+   together. Long sections (work, projects) flow normally instead. */
+.section-atomic {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+.section-title {
+  font-family: "Montserrat", Arial, sans-serif;
+  font-size: 11pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #111827;
+  border-bottom: 1.6px solid #1d4ed8;
+  padding-bottom: 3px;
+  margin: 0 0 7px;
+}
+
+.summary {
+  margin: 0;
+  font-size: 10pt;
+}
+
+/* Contact info: icon-labeled rows, two per line */
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px 18px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.contact-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 9.6pt;
+  min-width: 0;
+}
+
+.contact-icon {
+  flex: none;
+  display: inline-flex;
+  width: 13px;
+  height: 13px;
+  color: #1d4ed8;
+}
+
+.contact-icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.contact-text {
+  overflow-wrap: anywhere;
+}
+
+.contact-text b {
+  font-weight: 700;
+  color: #111827;
+}
+
+/* Work / Project items */
+.work-item,
+.project-item {
+  margin-bottom: 9px;
+}
+
+.item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.item-heading {
+  margin: 0;
+  font-size: inherit;
+}
+
+.item-role {
+  font-family: "Montserrat", Arial, sans-serif;
+  font-size: 10.6pt;
+  font-weight: 700;
+  color: #111827;
+}
+
+.item-title {
+  font-size: 10.2pt;
+  font-weight: 700;
+  color: #1d4ed8;
+}
+
+.item-description {
+  font-size: 9.8pt;
+  font-weight: 400;
+  color: #1f2328;
+}
+
+.item-dates {
+  font-size: 9.3pt;
+  font-weight: 400;
+  color: #4b5563;
+  white-space: nowrap;
+}
+
+.item-links {
+  font-size: 9.2pt;
+  color: #4b5563;
+  margin-top: 1px;
+}
+
+.item-links a {
+  font-weight: 600;
+}
+
+ul.highlights {
+  margin: 4px 0 0;
+  padding-left: 16px;
+  list-style: disc;
+}
+
+ul.highlights li {
+  margin-bottom: 2px;
+  font-size: 9.8pt;
+}
+
+/* Simple lists: skills, certificates, education, references */
+ul.simple-list {
+  margin: 0;
+  padding-left: 16px;
+  list-style: disc;
+}
+
+ul.simple-list li {
+  font-size: 9.8pt;
+  margin-bottom: 4px;
+}
+
+.declaration p {
+  margin: 0 0 8px;
+  font-size: 9.6pt;
+  color: #1f2328;
+}
+
+.declaration .signature {
+  margin-top: 10px;
+  font-weight: 700;
+  color: #111827;
+}
