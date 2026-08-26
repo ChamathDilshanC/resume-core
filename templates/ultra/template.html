@@ -123,5 +123,12 @@
   </div>
   {{/if}}
 
+  {{#unless basics.hideDeclaration}}
+  <div class="section section-atomic declaration">
+    <p>I hereby certify that the above particulars given by me are true and accurate to the best of my knowledge. {{#if basics.targetCompany}}If given the opportunity to serve at {{basics.targetCompany}}, I assure you{{else}}If given the opportunity to serve in your esteemed organization, I assure you{{/if}} that I shall perform my duties with commitment and loyalty.</p>
+    <p class="signature">Yours Faithfully,<br />{{basics.name}}</p>
+  </div>
+  {{/unless}}
+
 </body>
 </html>

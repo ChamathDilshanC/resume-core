@@ -190,3 +190,15 @@ ul.simple-list li {
   font-size: 10pt;
   margin-bottom: 4px;
 }
+
+.declaration p {
+  margin: 0 0 8px;
+  font-size: 10pt;
+  color: #1a1a1a;
+}
+
+.declaration .signature {
+  margin-top: 8px;
+  font-weight: 700;
+  color: #111827;
+}
