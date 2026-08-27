@@ -12,8 +12,10 @@
     "merge-work": "node scripts/merge-work.js",
     "parse-issue": "node scripts/parse-issue.js",
     "upload-to-drive": "node scripts/upload-to-drive.js",
+    "sync-drive-folders": "node scripts/sync-drive-folders.js",
     "send-whatsapp": "node scripts/send-whatsapp.js",
-    "send-email": "node scripts/send-email.js"
+    "send-email": "node scripts/send-email.js",
+    "test": "node --test scripts/lib/*.test.js"
   },
   "author": "Chamath Dilshan",
   "license": "MIT",

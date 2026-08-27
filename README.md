@@ -74,6 +74,10 @@ scripts/
   parse-issue.js                   Parses a submitted Issue Form body into fields
   commit-and-push.sh               Retry-safe commit/push (fetch + rebase on non-fast-forward)
   upload-to-drive.js               Overwrites resume.pdf in Google Drive via the Drive API
+  sync-drive-folders.js            Creates/reuses each project's Drive folder and syncs its mockup images
+  lib/google-drive.js              Shared Drive client + idempotent find-or-create folder helpers
+  lib/project-folder-name.js       Resolves the Drive folder name for a project (repo name, or display name as fallback)
+  lib/mockup-sync.js               Pure reconciliation of Drive files <-> resume.json's per-project mockups array
   send-email.js                    Emails resume.pdf (with a Drive link) via Gmail SMTP
   send-whatsapp.js                 Uploads resume.pdf to Meta's Graph API and sends it as a document message
   discover-projects.js             Scans your repos and auto-tags untracked meta-repos with resume-project
@@ -82,6 +86,7 @@ scripts/
   update-work-experience.yml       Flow B: issues:opened -> AI -> merge -> PDF -> upload to Drive -> close issue
   regenerate-pdf.yml               workflow_dispatch: re-render the PDF + re-upload (used by resume-admin)
   discover-projects.yml            Daily + workflow_dispatch: runs discover-projects.js
+  sync-drive-mockups.yml           workflow_dispatch: runs sync-drive-folders.js (used by resume-admin)
 .github/ISSUE_TEMPLATE/
   work-experience.yml              Structured form for manual work experience entries
 notifier-template/notify-resume.yml  Template to copy into each tracked project repo
@@ -116,6 +121,11 @@ it (see **One-time setup** below).
     (Drive API enabled). See **Google Drive upload** below.
   - `GDRIVE_FILE_ID` — the Drive file ID `resume.pdf` gets uploaded into. See
     **Google Drive upload** below.
+  - `GOOGLE_DRIVE_PROJECTS_ROOT_FOLDER_ID` *(optional — only needed for the
+    project mockup gallery)* — the Drive folder ID everything in **Google
+    Drive project folders & mockups** below gets created under. Reuses the
+    same `GDRIVE_CREDENTIALS` service account, so it must also be shared
+    with that service account as Editor.
   - `SMTP_USER` — the Gmail address the resume gets emailed *from*.
   - `SMTP_APP_PASSWORD` — a 16-character
     [Google App Password](https://myaccount.google.com/apppasswords) for
@@ -158,6 +168,49 @@ setup has to create the placeholder file yourself first:
 
 After that, every pipeline run overwrites the same Drive file in place; the
 file's shareable link never changes.
+
+### Google Drive project folders & mockups
+
+Separate from the single `resume.pdf` file above, `sync-drive-mockups.yml`
+(`scripts/sync-drive-folders.js`) gives each project in `resume.json` its own
+Drive folder to drop mockups/screenshots into:
+
+```
+<GOOGLE_DRIVE_PROJECTS_ROOT_FOLDER_ID>/
+├── AegisZero/
+│   ├── mockups/
+│   ├── screenshots/
+│   └── assets/
+└── DevResume-Automation-Pipeline/
+    ├── mockups/
+    ├── screenshots/
+    └── assets/
+```
+
+Setup (one-time):
+
+1. In your own Google Drive, create a folder (e.g. "DevResume Projects") and
+   share it with the same service account from **Google Drive upload**
+   above, **Editor** access.
+2. Copy its ID out of the URL
+   (`drive.google.com/drive/folders/`**`THIS_PART`**) — that's the
+   `GOOGLE_DRIVE_PROJECTS_ROOT_FOLDER_ID` secret.
+
+Then, from resume-admin's Projects tab (or `workflow_dispatch` here directly,
+optionally with a `repo_full_name` input to sync just one project):
+
+1. **Sync Drive Folder** — creates `<repo-name>/mockups`, `/screenshots`,
+   `/assets` under the root folder the first time (reusing the folder by ID
+   on every later run, so a repo rename never creates a duplicate).
+2. Drop PNG/JPG/WEBP images into any of those three subfolders by hand.
+3. **Sync Mockups** (same button/workflow) picks up new files, updates
+   metadata on ones already known, and flags files removed from Drive as
+   `missing` (force-disabled, not deleted from `resume.json`) instead of
+   silently dropping them.
+
+Submodules never get their own folder — only entries in `resume.json`'s
+`projects` array with `repositoryType` unset or `"MAIN"` are synced (see
+**Submodule handling** in `architecture.md`).
 
 ### WhatsApp delivery
 

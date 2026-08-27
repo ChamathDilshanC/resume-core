@@ -1,0 +1,66 @@
+name: Sync Project Drive Folders & Mockups
+
+on:
+  workflow_dispatch:
+    inputs:
+      repo_full_name:
+        description: "Sync only this project (owner/repo). Leave blank to sync every eligible project."
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+concurrency:
+  group: resume-core-update
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout resume-core
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Checkout resume-data (private)
+        uses: actions/checkout@v4
+        with:
+          repository: ChamathDilshanC/resume-data
+          token: ${{ secrets.RESUME_DATA_PAT }}
+          ref: main
+          path: data
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        env:
+          # This job only needs googleapis, not puppeteer's headless Chrome.
+          PUPPETEER_SKIP_DOWNLOAD: "true"
+        run: npm ci
+
+      - name: Sync Drive project folders and mockups
+        env:
+          GDRIVE_CREDENTIALS: ${{ secrets.GDRIVE_CREDENTIALS }}
+          GOOGLE_DRIVE_PROJECTS_ROOT_FOLDER_ID: ${{ secrets.GOOGLE_DRIVE_PROJECTS_ROOT_FOLDER_ID }}
+          RESUME_JSON_PATH: ${{ github.workspace }}/data/resume.json
+          TARGET_REPO_FULL_NAME: ${{ inputs.repo_full_name }}
+        run: node scripts/sync-drive-folders.js
+
+      - name: Commit and push resume.json (resume-data)
+        env:
+          COMMIT_MESSAGE: "chore: sync Drive project folders/mockups"
+        run: bash scripts/commit-and-push.sh data resume.json
+
+      - name: Upload sync summary
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: drive-sync-summary
+          path: drive-sync-summary.json
+          retention-days: 14
