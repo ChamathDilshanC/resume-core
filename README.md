@@ -59,6 +59,41 @@ sequenceDiagram
     Core->>Core: push resume.json to resume-data,<br/>upload resume.pdf to Google Drive,<br/>email it, send it via WhatsApp (+ close issue for Flow B)
 ```
 
+## Component graph
+
+How the scripts under `scripts/` actually call each other within a single
+workflow run (both Flow A and Flow B share this same chain from `AI` onward):
+
+```mermaid
+flowchart LR
+    subgraph INTAKE["Intake (differs per flow)"]
+        FR["fetch-repo-data.js<br/>name, description, languages"]
+        PI["parse-issue.js<br/>structured Issue Form fields"]
+    end
+
+    FR --> GB["generate-bullets.js<br/>AI_API_KEY, multi-key fallback"]
+    PI --> GB
+
+    GB --> MP["merge-project.js"]
+    GB --> MW["merge-work.js"]
+
+    MP --> CP["commit-and-push.sh<br/>fetch + rebase, retry-safe"]
+    MW --> CP
+    CP -->|push| DATA[("resume-data<br/>resume.json")]
+
+    DATA --> GEN["generate-pdf.js<br/>Handlebars + Puppeteer"]
+    GEN --> PDF(["resume.pdf"])
+
+    PDF --> UP["upload-to-drive.js<br/>files.update, fixed file ID"]
+    PDF --> EM["send-email.js<br/>Gmail SMTP"]
+    PDF --> WA["send-whatsapp.js<br/>Meta Graph API, template message"]
+
+    SDF["sync-drive-folders.js<br/>+ lib/mockup-sync.js"] -.->|"separate workflow,<br/>triggered from resume-admin"| DATA
+
+    style DATA fill:#fef2f2,stroke:#dc2626,color:#111827
+    style PDF fill:#dcfce7,stroke:#16a34a,color:#111827
+```
+
 ## Repository layout
 
 ```
