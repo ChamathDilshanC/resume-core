@@ -140,7 +140,10 @@ async function generateResumePdf() {
   const templateSource = await fs.readFile(path.join(templateDir, "template.html"), "utf8");
   const stylesSource = await fs.readFile(path.join(templateDir, "styles.css"), "utf8");
 
-  resumeData.basics.image = await resolveImageToDataUri(resumeData.basics.image);
+  // Photo-free templates should not depend on an unused image asset existing.
+  if (templateSource.includes("basics.image") && resumeData.basics?.image) {
+    resumeData.basics.image = await resolveImageToDataUri(resumeData.basics.image);
+  }
 
   const template = Handlebars.compile(templateSource);
   const html = template(resumeData).replace(

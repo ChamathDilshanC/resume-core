@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{{basics.name}} - Resume</title>
+  <!-- INLINE_STYLES -->
+</head>
+<body>
+  <header class="header">
+    {{#if basics.name}}<h1>{{basics.name}}</h1>{{/if}}
+    {{#if basics.label}}<p class="headline">{{basics.label}}</p>{{/if}}
+    <div class="contact">
+      {{#if basics.email}}<span><a href="mailto:{{basics.email}}">{{basics.email}}</a></span>{{/if}}
+      {{#if basics.phone}}<span><a href="tel:{{basics.phone}}">{{basics.phone}}</a></span>{{/if}}
+      {{#if basics.location.city}}<span>{{basics.location.city}}{{#if basics.location.countryCode}}, {{countryName basics.location.countryCode}}{{/if}}</span>{{else}}{{#if basics.location.countryCode}}<span>{{countryName basics.location.countryCode}}</span>{{/if}}{{/if}}
+    </div>
+    <div class="contact">
+      {{#if basics.url}}<span><a href="{{basics.url}}">{{stripProtocol basics.url}}</a></span>{{/if}}
+      {{#each basics.profiles}}
+        {{#if url}}<span><a href="{{url}}">{{stripProtocol url}}</a></span>{{else}}{{#if username}}<span>{{#if network}}{{network}}: {{/if}}{{username}}</span>{{/if}}{{/if}}
+      {{/each}}
+    </div>
+  </header>
+
+  {{#if basics.summary}}
+  <section>
+    <h2>Professional Summary</h2>
+    <p>{{basics.summary}}</p>
+  </section>
+  {{/if}}
+
+  {{#if skills.length}}
+  <section>
+    <h2>Technical Skills</h2>
+    <ul class="plain-list skills">
+      {{#each skills}}
+      {{#if keywords.length}}<li>{{#if name}}<strong>{{name}}:</strong> {{/if}}{{joinList keywords}}</li>{{else}}{{#if name}}<li><strong>{{name}}</strong></li>{{/if}}{{/if}}
+      {{/each}}
+    </ul>
+  </section>
+  {{/if}}
+
+  {{#if work.length}}
+  <section>
+    <h2>Work Experience</h2>
+    {{#each work}}
+    <article class="entry">
+      <div class="entry-heading">
+        {{#if position}}<h3>{{position}}</h3>{{/if}}
+        {{#if name}}<p class="organization">{{#if url}}<a href="{{url}}">{{name}}</a>{{else}}{{name}}{{/if}}</p>{{/if}}
+        {{#if (dateRange startDate endDate)}}<p class="dates">{{dateRange startDate endDate}}</p>{{/if}}
+      </div>
+      {{#if summary}}<p class="entry-summary">{{summary}}</p>{{/if}}
+      {{#if highlights.length}}<ul class="highlights">{{#each highlights}}{{#if this}}<li>{{this}}</li>{{/if}}{{/each}}</ul>{{/if}}
+    </article>
+    {{/each}}
+  </section>
+  {{/if}}
+
+  {{#if projects.length}}
+  <section>
+    <h2>Projects</h2>
+    {{#each projects}}
+    <article class="entry">
+      <div class="entry-heading">
+        {{#if name}}<h3>{{name}}</h3>{{/if}}
+        {{#if description}}<p class="description">{{description}}</p>{{/if}}
+      </div>
+      {{#if links.length}}
+      <ul class="plain-list links">
+        {{#each links}}{{#if url}}<li>{{#if label}}<span>{{label}}: </span>{{/if}}<a href="{{url}}">{{stripProtocol url}}</a></li>{{/if}}{{/each}}
+      </ul>
+      {{/if}}
+      {{#if highlights.length}}<ul class="highlights">{{#each highlights}}{{#if this}}<li>{{this}}</li>{{/if}}{{/each}}</ul>{{/if}}
+    </article>
+    {{/each}}
+  </section>
+  {{/if}}
+
+  {{#if education.length}}
+  <section>
+    <h2>Education</h2>
+    {{#each education}}
+    <article class="entry education">
+      <div class="entry-heading">
+        {{#if studyType}}<h3>{{studyType}}{{#if area}} in {{area}}{{/if}}</h3>{{else}}{{#if area}}<h3>{{area}}</h3>{{/if}}{{/if}}
+        {{#if institution}}<p class="organization">{{#if url}}<a href="{{url}}">{{institution}}</a>{{else}}{{institution}}{{/if}}</p>{{/if}}
+        {{#if (dateRange startDate endDate)}}<p class="dates">{{dateRange startDate endDate}}</p>{{/if}}
+      </div>
+      {{#if score}}<p>Score: {{score}}</p>{{/if}}
+      {{#if courses.length}}<p>Courses: {{joinList courses}}</p>{{/if}}
+    </article>
+    {{/each}}
+  </section>
+  {{/if}}
+
+  {{#if certificates.length}}
+  <section>
+    <h2>Certifications</h2>
+    <ul class="plain-list credentials">
+      {{#each certificates}}
+      <li>{{#if name}}<strong>{{#if url}}<a href="{{url}}">{{name}}</a>{{else}}{{name}}{{/if}}</strong>{{/if}}{{#if issuer}}{{#if name}} - {{/if}}{{issuer}}{{/if}}{{#if date}} <span class="dates">({{dateRange date ""}})</span>{{/if}}</li>
+      {{/each}}
+    </ul>
+  </section>
+  {{/if}}
+
+  {{#if references.length}}
+  <section>
+    <h2>References</h2>
+    <ul class="plain-list credentials">
+      {{#each references}}<li>{{#if name}}<strong>{{name}}</strong>{{/if}}{{#if reference}}{{#if name}} - {{/if}}{{reference}}{{/if}}</li>{{/each}}
+    </ul>
+  </section>
+  {{/if}}
+
+  {{#unless basics.hideDeclaration}}
+  <section class="declaration">
+    <p>I hereby certify that the above particulars given by me are true and accurate to the best of my knowledge. {{#if basics.targetCompany}}If given the opportunity to serve at {{basics.targetCompany}}, I assure you{{else}}If given the opportunity to serve in your esteemed organization, I assure you{{/if}} that I shall perform my duties with commitment and loyalty.</p>
+    {{#if basics.name}}<p class="signature">Yours Faithfully,<br />{{basics.name}}</p>{{/if}}
+  </section>
+  {{/unless}}
+</body>
+</html>
