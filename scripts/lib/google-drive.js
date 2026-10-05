@@ -41,7 +41,7 @@ async function findOrCreateFolder(drive, name, parentId) {
   return createFolder(drive, name, parentId);
 }
 
-const SUBFOLDER_NAMES = ["mockups", "screenshots", "assets"];
+const SUBFOLDER_NAMES = ["mockups", "screenshots", "assets", "animations"];
 
 // Reuses `existingFolderId` (from a previous sync) when it still resolves,
 // so a repo rename doesn't orphan the old folder and create a new one under
@@ -74,10 +74,18 @@ async function ensureProjectFolderStructure(drive, rootFolderId, folderName, exi
     mockupsFolderId: subfolders.mockups.id,
     screenshotsFolderId: subfolders.screenshots.id,
     assetsFolderId: subfolders.assets.id,
+    animationsFolderId: subfolders.animations.id,
   };
 }
 
-const SUPPORTED_MIME_TYPES = new Set(["image/png", "image/jpeg", "image/webp"]);
+const SUPPORTED_MIME_TYPES = new Set([
+  "image/png",
+  "image/jpeg",
+  "image/webp",
+  "video/mp4",
+  "video/webm",
+  "video/quicktime",
+]);
 
 // Pulled out as its own pure function so the filtering rule (which MIME
 // types count as a "mockup") is unit-testable without a live Drive client.

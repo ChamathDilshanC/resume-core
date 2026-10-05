@@ -130,7 +130,8 @@ function pdfDisplayName(resumeData) {
 }
 
 async function generateResumePdf() {
-  const resumeData = await fs.readJson(RESUME_JSON_PATH);
+  const sourceData = await fs.readJson(RESUME_JSON_PATH);
+  const resumeData = { ...sourceData, projects: sourceData.projects?.filter((project) => project.includeInResume !== false) };
 
   const templateName = resumeData.template || process.env.RESUME_TEMPLATE || DEFAULT_TEMPLATE;
   const templateDir = path.join(TEMPLATES_DIR, templateName);

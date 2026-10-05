@@ -11,18 +11,29 @@ async function main() {
   const bulletsPath = path.join(process.cwd(), process.env.BULLETS_FILE || "bullets.json");
 
   const resume = await fs.readJson(resumeJsonPath);
-  const highlights = await fs.readJson(bulletsPath);
+  const draft = await fs.readJson(bulletsPath);
+  // Accept older bullet-array files while the pipeline transitions to drafts.
+  const highlights = Array.isArray(draft) ? draft : draft.highlights;
+  if (!Array.isArray(highlights) || !highlights.length || !highlights.every((h) => typeof h === "string" && h.trim())) {
+    throw new Error("Invalid project highlights; resume.json was not changed.");
+  }
+  if (!Array.isArray(draft) && (typeof draft.description !== "string" || !draft.description.trim())) {
+    throw new Error("Invalid project description; resume.json was not changed.");
+  }
 
   const repoUrl = process.env.REPO_URL || "";
   const projectEntry = {
     name: repoName,
-    description: process.env.REPO_DESCRIPTION || "",
+    description: Array.isArray(draft) ? process.env.REPO_DESCRIPTION || "" : draft.description,
     highlights,
     links: repoUrl ? [{ label: repoName, url: repoUrl }] : [],
   };
 
   resume.projects = resume.projects || [];
-  const existingIndex = resume.projects.findIndex((project) => project.name === repoName);
+  const repoFullName = [process.env.SOURCE_REPO_OWNER, process.env.SOURCE_REPO_NAME].filter(Boolean).join("/");
+  if (repoFullName.includes("/")) projectEntry.repoFullName = repoFullName;
+  const existingIndex = resume.projects.findIndex((project) =>
+    (repoFullName && project.repoFullName === repoFullName) || project.name === repoName);
 
   if (existingIndex >= 0) {
     resume.projects[existingIndex] = { ...resume.projects[existingIndex], ...projectEntry };

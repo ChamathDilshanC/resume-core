@@ -1,0 +1,94 @@
+@page {
+  size: A4;
+  margin: 12mm 15mm;
+}
+
+:root {
+  --text-primary: #17202a;
+  --text-secondary: #394553;
+  --accent: #183b56;
+  --border: #c9d0d5;
+  --font-body: Arial, Helvetica, sans-serif;
+  --space-1: 2px;
+  --space-2: 4px;
+  --space-3: 6px;
+  --space-4: 8px;
+  --space-5: 12px;
+  --space-6: 16px;
+}
+
+* { box-sizing: border-box; }
+html { margin: 0; padding: 0; background: white; }
+body {
+  margin: 0;
+  padding: 0;
+  color: var(--text-primary);
+  background: white;
+  font-family: var(--font-body);
+  font-size: 10.5pt;
+  line-height: 1.4;
+  overflow-wrap: break-word;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* Screen content has the same 180mm measure as the renderer's A4 print area.
+   @page supplies print margins; never add body padding in print as well. */
+@media screen {
+  body { max-width: 210mm; margin: 0 auto; padding: 12mm 15mm; }
+}
+@media screen and (max-width: 480px) {
+  body { padding: var(--space-6); }
+}
+
+p, ul { margin: 0; }
+a { color: inherit; text-decoration: none; overflow-wrap: anywhere; }
+strong { font-weight: 700; }
+.header { border-bottom: 1.5px solid var(--accent); padding-bottom: var(--space-5); }
+h1 { margin: 0; font-size: 25pt; line-height: 1.12; font-weight: 700; }
+.headline { margin-top: var(--space-2); font-size: 12pt; font-weight: 500; color: var(--accent); }
+.contact { font-size: 9.5pt; color: var(--text-secondary); margin-top: var(--space-2); }
+.contact:empty { display: none; }
+.contact span { margin-right: var(--space-5); }
+section { margin-top: var(--space-6); }
+h2 {
+  margin: 0 0 var(--space-3);
+  padding-bottom: var(--space-2);
+  border-bottom: 0.6px solid var(--border);
+  font-size: 11pt;
+  line-height: 1.3;
+  font-weight: 700;
+  color: var(--accent);
+}
+h3 { margin: 0; font-size: 10.8pt; line-height: 1.35; font-weight: 700; }
+.entry + .entry { margin-top: var(--space-5); }
+.organization { font-weight: 600; }
+.dates { color: var(--text-secondary); font-size: 9.5pt; }
+.description { color: var(--text-secondary); margin-top: var(--space-1); }
+.stack { font-size: 9.5pt; margin-top: var(--space-2); }
+.links { color: var(--text-secondary); font-size: 9.5pt; margin-top: var(--space-1); }
+.links a { text-decoration: underline; text-decoration-color: var(--border); text-underline-offset: 2px; }
+.entry-summary, .highlights { margin-top: var(--space-2); }
+.highlights { padding-left: var(--space-6); list-style: disc; }
+.highlights li { padding-left: var(--space-1); margin-top: var(--space-1); }
+.plain-list { padding: 0; list-style: none; }
+.skills li, .credentials li { margin-top: var(--space-2); }
+.skills li:first-child, .credentials li:first-child { margin-top: 0; }
+.declaration { color: var(--text-secondary); border-top: 0.6px solid var(--border); padding-top: var(--space-4); }
+.signature { margin-top: var(--space-4); }
+
+/* Keep the heading chain with the first content line, but allow long entries
+   and lists to flow. Avoid atomic whole sections, which leave large gaps. */
+h1, h2, h3, .headline, .entry-heading, .entry-summary, .stack, .links {
+  break-after: avoid;
+  page-break-after: avoid;
+}
+.entry-heading, .links, .skills li, .credentials li, .highlights li {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+.highlights li:last-child {
+  break-before: avoid;
+  page-break-before: avoid;
+}
+p, li { orphans: 2; widows: 2; }

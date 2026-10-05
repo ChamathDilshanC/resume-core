@@ -40,6 +40,13 @@ test("a file removed from Drive is kept but flagged missing and force-disabled",
   assert.equal(result[0].featured, true);
 });
 
+test("an animations-category file reconciles like any other category", () => {
+  const result = reconcileMockups([], { animations: [file("v1", "demo.mp4", { mimeType: "video/mp4" })] });
+  assert.equal(result.length, 1);
+  assert.equal(result[0].category, "animations");
+  assert.equal(result[0].mimeType, "video/mp4");
+});
+
 test("the same Drive file id appearing in two categories only produces one record", () => {
   const result = reconcileMockups([], {
     mockups: [file("dup", "shared.png")],

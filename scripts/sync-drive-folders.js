@@ -41,13 +41,14 @@ async function syncProject(drive, rootFolderId, project) {
     lastSyncedAt: now,
   };
 
-  const [mockups, screenshots, assets] = await Promise.all([
+  const [mockups, screenshots, assets, animations] = await Promise.all([
     listSupportedFiles(drive, folder.mockupsFolderId),
     listSupportedFiles(drive, folder.screenshotsFolderId),
     listSupportedFiles(drive, folder.assetsFolderId),
+    listSupportedFiles(drive, folder.animationsFolderId),
   ]);
 
-  project.mockups = reconcileMockups(project.mockups, { mockups, screenshots, assets });
+  project.mockups = reconcileMockups(project.mockups, { mockups, screenshots, assets, animations });
 
   return project.mockups.length;
 }

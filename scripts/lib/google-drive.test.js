@@ -12,6 +12,16 @@ test("keeps png, jpeg, and webp", () => {
   assert.equal(result.length, 3);
 });
 
+test("keeps mp4, webm, and quicktime video", () => {
+  const files = [
+    { id: "1", mimeType: "video/mp4" },
+    { id: "2", mimeType: "video/webm" },
+    { id: "3", mimeType: "video/quicktime" },
+  ];
+  const result = filterSupportedFiles(files);
+  assert.equal(result.length, 3);
+});
+
 test("drops unsupported mime types (gif, pdf, folders)", () => {
   const files = [
     { id: "1", mimeType: "image/gif" },
@@ -29,5 +39,5 @@ test("handles an empty/undefined file list", () => {
 
 test("SUPPORTED_MIME_TYPES documents the exact set (gif deliberately excluded for now)", () => {
   assert.equal(SUPPORTED_MIME_TYPES.has("image/gif"), false);
-  assert.equal(SUPPORTED_MIME_TYPES.size, 3);
+  assert.equal(SUPPORTED_MIME_TYPES.size, 6);
 });
