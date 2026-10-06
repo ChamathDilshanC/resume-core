@@ -22,7 +22,7 @@ function loadAdmin(relative, mocks = {}) {
   }).outputText;
   const exports = {};
   vm.runInNewContext(code, { exports, process, Buffer, console,
-    require: (id) => Object.hasOwn(mocks, id) ? mocks[id] : adminRequire(id),
+    require: (id) => Object.hasOwn(mocks, id) ? mocks[id] : createRequire(filename)(id),
   }, { filename });
   return exports;
 }

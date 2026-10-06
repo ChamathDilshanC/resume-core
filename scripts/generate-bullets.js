@@ -92,7 +92,20 @@ async function generateBulletsText(systemPrompt, userPrompt) {
 async function main() {
   const resumePath = process.env.RESUME_JSON_PATH || path.join(process.cwd(), "data", "resume.json");
   const resume = await fs.pathExists(resumePath) ? await fs.readJson(resumePath) : {};
-  const { system, user } = buildPrompt(process.env, resume);
+  let repositoryContext;
+  if (process.env.PROMPT_MODE === "project") {
+    const repoDataPath = path.resolve(process.cwd(), process.env.REPO_DATA_FILE || "repo-data.json");
+    if (!await fs.pathExists(repoDataPath)) throw new Error("Run fetch-repo-data.js before generating a project draft.");
+    repositoryContext = (await fs.readJson(repoDataPath)).repository_context;
+    const expected = process.env.SOURCE_REPO_OWNER && process.env.SOURCE_REPO_NAME
+      ? `${process.env.SOURCE_REPO_OWNER}/${process.env.SOURCE_REPO_NAME}` : null;
+    if (!repositoryContext?.root || (expected
+      ? repositoryContext.root.fullName.toLowerCase() !== expected.toLowerCase()
+      : repositoryContext.root.name !== process.env.REPO_NAME)) {
+      throw new Error("Repository context does not match the requested project; fetch it again.");
+    }
+  }
+  const { system, user } = buildPrompt(process.env, resume, repositoryContext);
   const rawText = await generateBulletsText(system, user);
   const draft = parseDraft(rawText, process.env.PROMPT_MODE);
 

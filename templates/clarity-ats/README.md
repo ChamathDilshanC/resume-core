@@ -61,6 +61,9 @@ Optional fields are backward compatible; old projects render normally:
 ```
 
 Evidence notes are drafting inputs, never a second section of the printed CV.
+GitHub-linked drafts also read main-repository and recursive submodule READMEs.
+The draft review shows the source files and any collection gaps. See
+[README research](../../docs/readme-project-research.md) for collection and writing rules.
 Write bullets as **accurate action + concrete work + relevant tools + supported
 result/context**. Not every bullet needs a metric. Do not invent percentages,
 users, performance gains, production deployment, leadership or architecture.

@@ -4,6 +4,8 @@ const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
 const { execFileSync } = require("node:child_process");
+const vm = require("node:vm");
+const { createRequire } = require("node:module");
 const { buildPrompt, parseDraft } = require("./resume-writing");
 
 test("automated project drafts receive saved evidence and role context, including renamed projects", () => {
@@ -42,6 +44,34 @@ test("draft parser accepts project objects and work arrays, rejects malformed an
   }
 });
 
+test("pipeline reads the README handoff into the AI request and rejects stale repo context", async () => {
+  const filename = path.resolve(__dirname, "../generate-bullets.js");
+  const source = fs.readFileSync(filename, "utf8");
+  const context = { root: { fullName: "owner/repo", name: "repo" }, documents: [{ text: "README says this API uses FastAPI." }] };
+  let request;
+  let saved;
+  const run = () => vm.runInNewContext(source.slice(0, source.indexOf("main().catch")) + "main()", {
+    require: (id) => id === "fs-extra" ? {
+      pathExists: async () => true,
+      readJson: async (p) => p.endsWith("repo-data.json") ? { repository_context: context } : {},
+      writeJson: async (_p, data) => { saved = data; },
+    } : createRequire(filename)(id),
+    process: { cwd: () => __dirname, env: { PROMPT_MODE: "project", REPO_NAME: "repo",
+      SOURCE_REPO_OWNER: "owner", SOURCE_REPO_NAME: "repo", AI_API_KEY: "test-key" } },
+    fetch: async (_url, options) => {
+      request = JSON.parse(options.body);
+      return { ok: true, json: async () => ({ candidates: [{ content: { parts: [{ text: '{"description":"An API service.","highlights":["Provides an API using FastAPI."]}' }] } }] }) };
+    },
+    console: { log() {} },
+  });
+  await run();
+  assert.equal(JSON.parse(request.contents[0].parts[0].text).repositoryContext.documents[0].text, context.documents[0].text);
+  assert(request.systemInstruction.parts[0].text.includes("untrusted source documentation"));
+  assert.equal(saved.description, "An API service.");
+  context.root.fullName = "other/repo";
+  await assert.rejects(run(), /does not match/);
+});
+
 test("merge accepts new and legacy drafts, keeps saved evidence, rejects corrupt output without changing data", () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "resume-writing-test-"));
   const resumePath = path.join(dir, "resume.json");
@@ -54,6 +84,10 @@ test("merge accepts new and legacy drafts, keeps saved evidence, rejects corrupt
   const run = () => execFileSync(process.execPath, [path.resolve(__dirname, "../merge-project.js")], { cwd: dir, env, stdio: "pipe" });
   try {
     fs.writeFileSync(resumePath, JSON.stringify(initial));
+    fs.writeFileSync(path.join(dir, "repo-data.json"), JSON.stringify({ repository_context: {
+      root: { fullName: "owner/repo", name: "repo" }, warnings: [],
+      documents: [{ repository: "owner/repo", path: "README.md", ref: "pinned", url: "https://github.com/owner/repo/blob/pinned/README.md", text: "PRIVATE_README_TEXT" }],
+    } }));
     fs.writeFileSync(bulletsPath, JSON.stringify({ description: "A release automation system.", highlights: ["Wrote release scripts."] }));
     run();
     let saved = JSON.parse(fs.readFileSync(resumePath));
@@ -61,6 +95,8 @@ test("merge accepts new and legacy drafts, keeps saved evidence, rejects corrupt
     assert.equal(saved.projects[0].description, "A release automation system.");
     assert.deepEqual(saved.projects[0].evidence, evidence);
     assert.equal(saved.projects[0].driveFolder.folderId, "keep");
+    assert.equal(saved.projects[0].repositoryResearch.sources[0].ref, "pinned");
+    assert(!JSON.stringify(saved).includes("PRIVATE_README_TEXT"));
     fs.writeFileSync(bulletsPath, '["Updated release scripts."]');
     run();
     saved = JSON.parse(fs.readFileSync(resumePath));

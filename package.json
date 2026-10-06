@@ -17,7 +17,7 @@
     "send-email": "node scripts/send-email.js",
     "test": "node --test scripts/lib/*.test.js"
   },
-  "author": "Chamath Dilshan",
+  "author": "ChamathDilshanC",
   "license": "MIT",
   "engines": {
     "node": ">=20"

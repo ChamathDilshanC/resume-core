@@ -1,6 +1,6 @@
 const policy = require("./resume-writing-policy.json");
 
-function buildPrompt(env, resume = {}) {
+function buildPrompt(env, resume = {}, repositoryContext) {
   const target = {
     targetRole: env.TARGET_ROLE || resume.basics?.label || "",
     jobDescription: env.JOB_DESCRIPTION || resume.basics?.jobDescription || "",
@@ -10,8 +10,8 @@ function buildPrompt(env, resume = {}) {
     const existing = (resume.projects || []).find((p) =>
       (repoFullName && p.repoFullName === repoFullName) || p.name === env.REPO_NAME) || {};
     return {
-      system: `${policy.evidence}\n\n${policy.project}`,
-      user: JSON.stringify({ target, project: {
+      system: `${policy.evidence}\n\n${policy.repository}\n\n${policy.project}`,
+      user: JSON.stringify({ target, repositoryContext, project: {
         name: env.REPO_NAME || "",
         description: env.REPO_DESCRIPTION || existing.description || "",
         technologies: [...new Set([...(env.TECH_STACK || "").split(","), ...(existing.technologies || [])]

@@ -46,13 +46,13 @@ sequenceDiagram
 
     par Flow A — automated
         Repo->>Core: repository_dispatch (push to main)
-        Core->>Core: fetch name/description/languages<br/>(+ submodules if monorepo)
+        Core->>Core: read main and nested submodule READMEs<br/>at pinned commits, plus metadata/languages
     and Flow B — manual
         Issue->>Core: issues: opened (work-experience label)
         Core->>Core: parse issue form fields
     end
-    Core->>AI: generate 2-3 ATS bullet points
-    AI-->>Core: JSON array of strings
+    Core->>AI: draft from README context and candidate evidence
+    AI-->>Core: project description + highlights / work bullet array
     Core->>Core: merge into resume.json<br/>(projects[] or work[], in resume-data)
     Core->>PDF: render template.html + resume.json
     PDF-->>Core: resume.pdf
@@ -67,7 +67,7 @@ workflow run (both Flow A and Flow B share this same chain from `AI` onward):
 ```mermaid
 flowchart LR
     subgraph INTAKE["Intake (differs per flow)"]
-        FR["fetch-repo-data.js<br/>name, description, languages"]
+        FR["fetch-repo-data.js<br/>main + submodule READMEs, metadata"]
         PI["parse-issue.js<br/>structured Issue Form fields"]
     end
 
@@ -102,8 +102,8 @@ styles.css                         Print-optimized stylesheet (inlined at render
 generate-pdf.js                    Compiles template + data and renders resume.pdf via Puppeteer
 assets/                            Profile photo + brand logo
 scripts/
-  fetch-repo-data.js               Fetches repo name/description/languages (+ submodules) from GitHub API
-  generate-bullets.js              Calls the AI API and returns a JSON array of bullet points
+  fetch-repo-data.js               Reads main/submodule READMEs and metadata from GitHub API
+  generate-bullets.js              Returns a project description/highlights object or a work bullet array
   merge-project.js                 Appends/updates an entry in resume.json's `projects` array
   merge-work.js                    Appends/updates an entry in resume.json's `work` array
   parse-issue.js                   Parses a submitted Issue Form body into fields
@@ -357,3 +357,8 @@ first, or point `RESUME_JSON_PATH` at wherever your local copy lives.
 To test the helper scripts locally, set the relevant environment variables
 (`GITHUB_TOKEN`, `SOURCE_REPO_OWNER`, `SOURCE_REPO_NAME`, `AI_API_KEY`, etc.)
 and run them directly, e.g. `node scripts/fetch-repo-data.js`.
+
+For project drafts, run `fetch-repo-data.js` before `generate-bullets.js`: the
+ignored `repo-data.json` handoff carries source-labelled README text to the AI.
+See [README-based project research](docs/readme-project-research.md) for source
+review, recursion, access permissions, context limits and writing rules.

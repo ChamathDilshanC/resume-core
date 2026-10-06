@@ -6,7 +6,7 @@ shift
 FILES=("$@")
 
 cd "$TARGET_DIR"
-git config user.name "Chamath Dilshan"
+git config user.name "ChamathDilshanC"
 git config user.email "chamathdilshan.dev@gmail.com"
 git add "${FILES[@]}"
 

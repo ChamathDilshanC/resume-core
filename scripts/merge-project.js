@@ -1,5 +1,6 @@
 const fs = require("fs-extra");
 const path = require("path");
+const { researchSummary } = require("./lib/repository-context.cjs");
 
 async function main() {
   const repoName = process.env.REPO_NAME;
@@ -32,6 +33,13 @@ async function main() {
   resume.projects = resume.projects || [];
   const repoFullName = [process.env.SOURCE_REPO_OWNER, process.env.SOURCE_REPO_NAME].filter(Boolean).join("/");
   if (repoFullName.includes("/")) projectEntry.repoFullName = repoFullName;
+  const repoDataPath = path.resolve(process.cwd(), process.env.REPO_DATA_FILE || "repo-data.json");
+  if (await fs.pathExists(repoDataPath)) {
+    const context = (await fs.readJson(repoDataPath)).repository_context;
+    if (context?.root && (repoFullName.includes("/")
+      ? context.root.fullName.toLowerCase() === repoFullName.toLowerCase()
+      : context.root.name === repoName)) projectEntry.repositoryResearch = researchSummary(context);
+  }
   const existingIndex = resume.projects.findIndex((project) =>
     (repoFullName && project.repoFullName === repoFullName) || project.name === repoName);
 

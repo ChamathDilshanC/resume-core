@@ -41,13 +41,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Fetch source repo data (details, languages, submodules)
+      - name: Read repository and submodule READMEs (pinned commits)
         id: repo_data
         env:
           GITHUB_TOKEN: ${{ secrets.RESUME_CORE_PAT || secrets.GITHUB_TOKEN }}
         run: node scripts/fetch-repo-data.js
 
-      - name: Generate AI resume bullet points
+      - name: Generate evidence-based project description and highlights
         if: steps.repo_data.outputs.is_ready == 'true'
         env:
           AI_API_KEY: ${{ secrets.AI_API_KEY }}
