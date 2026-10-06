@@ -1,0 +1,102 @@
+@page {
+  size: A4;
+  margin: 11mm 14mm;
+}
+
+:root {
+  --text-primary: #111827;
+  --text-secondary: #374151;
+  --accent: #0b4f6c;
+  --border: #cbd5e1;
+  --font-body: Arial, Helvetica, sans-serif;
+  --space-1: 2px;
+  --space-2: 4px;
+  --space-3: 6px;
+  --space-4: 8px;
+  --space-5: 11px;
+  --space-6: 14px;
+}
+
+* { box-sizing: border-box; }
+html { margin: 0; padding: 0; background: white; }
+body {
+  margin: 0;
+  padding: 0;
+  color: var(--text-primary);
+  background: white;
+  font-family: var(--font-body);
+  font-size: 10pt;
+  line-height: 1.38;
+  overflow-wrap: break-word;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* Screen content has the same measure as the renderer's A4 print area.
+   @page supplies print margins; never add body padding in print as well. */
+@media screen {
+  body { max-width: 210mm; margin: 0 auto; padding: 11mm 14mm; }
+}
+@media screen and (max-width: 480px) {
+  body { padding: var(--space-6); }
+}
+
+p, ul { margin: 0; }
+a { color: inherit; text-decoration: none; overflow-wrap: anywhere; }
+strong { font-weight: 700; }
+
+/* Header: name, the role being targeted, then plain-text contact lines. */
+.header { padding-bottom: var(--space-4); border-bottom: 2px solid var(--accent); }
+h1 { margin: 0; font-size: 24pt; line-height: 1.1; font-weight: 700; letter-spacing: 0.2px; }
+.headline { margin-top: var(--space-2); font-size: 12pt; font-weight: 700; color: var(--accent); }
+.contact { margin-top: var(--space-2); font-size: 9.5pt; color: var(--text-secondary); }
+.contact:empty { display: none; }
+.contact span + span::before { content: "|"; margin: 0 var(--space-4); color: var(--border); }
+
+section { margin-top: var(--space-6); }
+h2 {
+  margin: 0 0 var(--space-3);
+  padding-bottom: var(--space-1);
+  border-bottom: 0.6px solid var(--border);
+  font-size: 10pt;
+  line-height: 1.3;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.summary { color: var(--text-primary); }
+
+/* Entries: bold title with the date range pushed to the right edge (flex, no tables),
+   organization or role underneath, one scope line, then evidence bullets. */
+.entry + .entry { margin-top: var(--space-5); }
+.entry-heading { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-5); }
+.entry-title { min-width: 0; }
+h3 { margin: 0; font-size: 10.6pt; line-height: 1.35; font-weight: 700; }
+.organization { font-weight: 600; color: var(--accent); }
+.dates { flex: none; white-space: nowrap; color: var(--text-secondary); font-size: 9.5pt; }
+.scope { margin-top: var(--space-2); color: var(--text-secondary); }
+.stack { margin-top: var(--space-2); font-size: 9.5pt; }
+.links { margin-top: var(--space-2); color: var(--text-secondary); font-size: 9.5pt; }
+.links a { text-decoration: underline; text-decoration-color: var(--border); text-underline-offset: 2px; }
+.highlights { margin-top: var(--space-2); padding-left: var(--space-6); list-style: disc; }
+.highlights li { padding-left: var(--space-1); margin-top: var(--space-1); }
+.plain-list { padding: 0; list-style: none; }
+.skills li, .credentials li { margin-top: var(--space-2); }
+.skills li:first-child, .credentials li:first-child { margin-top: 0; }
+
+/* Keep each heading chain with its first content line, but let long entries and
+   lists flow across pages instead of leaving large gaps. */
+h1, h2, h3, .headline, .entry-heading, .scope, .stack {
+  break-after: avoid;
+  page-break-after: avoid;
+}
+.entry-heading, .links, .skills li, .credentials li, .highlights li {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+.highlights li:last-child {
+  break-before: avoid;
+  page-break-before: avoid;
+}
+p, li { orphans: 2; widows: 2; }
