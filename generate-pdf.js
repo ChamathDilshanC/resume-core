@@ -15,6 +15,14 @@ Handlebars.registerHelper("joinList", function (list) {
   return list.join(", ");
 });
 
+// Project technology lines: keep the first 10 (most relevant first) and add
+// "etc." when more were saved, so a long stack never floods a project entry.
+Handlebars.registerHelper("techList", function (list) {
+  if (!Array.isArray(list)) return "";
+  const items = list.map((item) => String(item).trim()).filter(Boolean);
+  return items.length > 10 ? `${items.slice(0, 10).join(", ")}, etc.` : items.join(", ");
+});
+
 // ATS-friendly date formatting: "2026-01" -> "Jan 2026", "2026-01-01" -> "Jan 2026", "2026" -> "2026".
 const MONTH_NAMES = [
   "Jan", "Feb", "Mar", "Apr", "May", "Jun",

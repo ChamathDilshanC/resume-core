@@ -85,8 +85,14 @@ h3 { margin: 0; font-size: 10.6pt; line-height: 1.35; font-weight: 700; }
 .skills li, .credentials li { margin-top: var(--space-2); }
 .skills li:first-child, .credentials li:first-child { margin-top: 0; }
 
-/* Keep each heading chain with its first content line, but let long entries and
-   lists flow across pages instead of leaving large gaps. */
+/* Projects always open on a fresh page. */
+.projects { break-before: page; page-break-before: always; }
+
+/* A whole entry moves to the next page rather than being cut across two. (An
+   entry taller than a page still has to flow.) */
+.entry { break-inside: avoid; page-break-inside: avoid; }
+
+/* Keep each heading chain with its first content line. */
 h1, h2, h3, .headline, .entry-heading, .scope, .stack {
   break-after: avoid;
   page-break-after: avoid;

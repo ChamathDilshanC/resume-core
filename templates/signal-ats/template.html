@@ -63,7 +63,7 @@
   {{/if}}
 
   {{#if projects.length}}
-  <section>
+  <section class="projects">
     <h2>Projects</h2>
     {{#each projects}}
     <article class="entry">
@@ -75,7 +75,7 @@
         {{#if (dateRange startDate endDate)}}<p class="dates">{{dateRange startDate endDate}}</p>{{/if}}
       </div>
       {{#if description}}<p class="scope">{{description}}</p>{{/if}}
-      {{#if technologies.length}}<p class="stack"><strong>Tech:</strong> {{joinList technologies}}</p>{{/if}}
+      {{#if technologies.length}}<p class="stack"><strong>Tech:</strong> {{techList technologies}}</p>{{/if}}
       {{#if highlights.length}}<ul class="highlights">{{#each highlights}}{{#if this}}<li>{{this}}</li>{{/if}}{{/each}}</ul>{{/if}}
       {{#if links.length}}
       <ul class="plain-list links">

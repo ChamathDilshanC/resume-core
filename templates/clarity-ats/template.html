@@ -69,7 +69,7 @@
         {{#if (dateRange startDate endDate)}}<p class="dates">{{dateRange startDate endDate}}</p>{{/if}}
         {{#if description}}<p class="description">{{description}}</p>{{/if}}
       </div>
-      {{#if technologies.length}}<p class="stack"><strong>Technologies:</strong> {{joinList technologies}}</p>{{/if}}
+      {{#if technologies.length}}<p class="stack"><strong>Technologies:</strong> {{techList technologies}}</p>{{/if}}
       {{#if links.length}}
       <ul class="plain-list links">
         {{#each links}}{{#if url}}<li>{{#if label}}<span>{{label}}: </span>{{/if}}<a href="{{url}}">{{stripProtocol url}}</a></li>{{/if}}{{/each}}
