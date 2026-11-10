@@ -118,29 +118,3 @@ jobs:
           RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
           GDRIVE_FILE_ID: ${{ secrets.GDRIVE_FILE_ID }}
         run: node scripts/send-email.js
-
-  send-whatsapp:
-    needs: send-email
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout resume-core
-        uses: actions/checkout@v4
-        with:
-          ref: main
-
-      - name: Download resume.pdf artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: resume-pdf
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-
-      - name: Send resume.pdf via WhatsApp
-        env:
-          WHATSAPP_TOKEN: ${{ secrets.WHATSAPP_TOKEN }}
-          WHATSAPP_PHONE_NUMBER_ID: ${{ secrets.WHATSAPP_PHONE_NUMBER_ID }}
-          RECIPIENT_PHONE_NUMBER: ${{ secrets.RECIPIENT_PHONE_NUMBER }}
-        run: node scripts/send-whatsapp.js
