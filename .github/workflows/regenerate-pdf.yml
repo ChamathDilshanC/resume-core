@@ -2,6 +2,11 @@ name: Regenerate Resume PDF
 
 on:
   workflow_dispatch:
+    inputs:
+      delivery_image_paths:
+        description: "Optional comma-separated image paths to deliver with the PDF"
+        required: false
+        type: string
 
 permissions:
   contents: read
@@ -118,3 +123,31 @@ jobs:
           RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
           GDRIVE_FILE_ID: ${{ secrets.GDRIVE_FILE_ID }}
         run: node scripts/send-email.js
+
+  deliver-notifications:
+    needs: send-email
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout resume-core
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Download resume.pdf artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: resume-pdf
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Deliver resume.pdf to Telegram and Discord
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          DELIVERY_IMAGE_PATHS: ${{ inputs.delivery_image_paths || vars.DELIVERY_IMAGE_PATHS }}
+          DISCORD_MAX_UPLOAD_BYTES: ${{ vars.DISCORD_MAX_UPLOAD_BYTES }}
+        run: node scripts/send-deliveries.js
