@@ -81,13 +81,6 @@ jobs:
           GDRIVE_FILE_ID: ${{ secrets.GDRIVE_FILE_ID }}
         run: node scripts/send-email.js
 
-      - name: Send resume.pdf via WhatsApp
-        env:
-          WHATSAPP_TOKEN: ${{ secrets.WHATSAPP_TOKEN }}
-          WHATSAPP_PHONE_NUMBER_ID: ${{ secrets.WHATSAPP_PHONE_NUMBER_ID }}
-          RECIPIENT_PHONE_NUMBER: ${{ secrets.RECIPIENT_PHONE_NUMBER }}
-        run: node scripts/send-whatsapp.js
-
       - name: Close issue
         uses: actions/github-script@v7
         with:

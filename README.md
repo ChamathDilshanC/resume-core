@@ -56,7 +56,7 @@ sequenceDiagram
     Core->>Core: merge into resume.json<br/>(projects[] or work[], in resume-data)
     Core->>PDF: render template.html + resume.json
     PDF-->>Core: resume.pdf
-    Core->>Core: push resume.json to resume-data,<br/>upload resume.pdf to Google Drive,<br/>email it, send it via WhatsApp (+ close issue for Flow B)
+    Core->>Core: push resume.json to resume-data,<br/>upload resume.pdf to Google Drive,<br/>email it (+ close issue for Flow B)
 ```
 
 ## Component graph
@@ -86,7 +86,6 @@ flowchart LR
 
     PDF --> UP["upload-to-drive.js<br/>files.update, fixed file ID"]
     PDF --> EM["send-email.js<br/>Gmail SMTP"]
-    PDF --> WA["send-whatsapp.js<br/>Meta Graph API, template message"]
 
     SDF["sync-drive-folders.js<br/>+ lib/mockup-sync.js"] -.->|"separate workflow,<br/>triggered from resume-admin"| DATA
 
@@ -114,7 +113,6 @@ scripts/
   lib/project-folder-name.js       Resolves the Drive folder name for a project (repo name, or display name as fallback)
   lib/mockup-sync.js               Pure reconciliation of Drive files <-> resume.json's per-project mockups array
   send-email.js                    Emails resume.pdf (with a Drive link) via Gmail SMTP
-  send-whatsapp.js                 Uploads resume.pdf to Meta's Graph API and sends it as a document message
   discover-projects.js             Scans your repos and auto-tags untracked meta-repos with resume-project
 .github/workflows/
   update-resume.yml                Flow A: repository_dispatch -> AI -> merge -> PDF -> upload to Drive
@@ -168,12 +166,6 @@ it (see **One-time setup** below).
     regular Google account password, which Gmail's SMTP rejects.
   - `RECIPIENT_EMAIL` — the address that receives the resume. Can be the
     same address as `SMTP_USER` to just email yourself.
-  - `WHATSAPP_TOKEN` — a Meta access token for a WhatsApp Business app. See
-    **WhatsApp delivery** below.
-  - `WHATSAPP_PHONE_NUMBER_ID` — the sending number's Phone Number ID (from
-    the Meta app dashboard, not the phone number itself).
-  - `RECIPIENT_PHONE_NUMBER` — the number to receive the resume, in full
-    international format with no `+` or leading zeros (e.g. `9477xxxxxxx`).
 - **Settings → Secrets and variables → Actions → Variables** *(optional)*:
   - `AI_MODEL` — override the first Gemini model tried (falls back through
     `gemini-flash-latest` → `gemini-flash-lite-latest` → `gemini-3.6-flash`
@@ -246,44 +238,6 @@ optionally with a `repo_full_name` input to sync just one project):
 Submodules never get their own folder — only entries in `resume.json`'s
 `projects` array with `repositoryType` unset or `"MAIN"` are synced (see
 **Submodule handling** in `architecture.md`).
-
-### WhatsApp delivery
-
-`scripts/send-whatsapp.js` uploads `resume.pdf` to Meta's Graph API as media,
-then sends it via a pre-approved **message template** with a document header
-to `RECIPIENT_PHONE_NUMBER`. It has to be a template, not a plain document
-message — WhatsApp only allows free-form messages within 24h of the
-recipient's last message to the business number, which an unattended
-pipeline run will never satisfy. Templates are exempt from that window.
-
-1. Create an app at [developers.facebook.com](https://developers.facebook.com/)
-   → add the **WhatsApp** product.
-2. The app dashboard's WhatsApp → API Setup page gives you a test number,
-   its **Phone Number ID** (`WHATSAPP_PHONE_NUMBER_ID`), and a **temporary**
-   access token good for 24 hours — fine for a one-off test, but the pipeline
-   needs a token that doesn't expire daily. Generate a **permanent** one
-   instead: Business Settings → Users → System Users → create a system user
-   → **Generate token** → select the app with `whatsapp_business_messaging`
-   permission → that's `WHATSAPP_TOKEN`.
-3. **Test-mode restriction:** until the Meta app is business-verified, it can
-   only message numbers explicitly added as testers. Add
-   `RECIPIENT_PHONE_NUMBER` under WhatsApp → API Setup → "To" → **Manage
-   phone number list**, and accept the invite Meta sends to that number —
-   otherwise every send silently 400s with "recipient not in allowed list."
-4. **Create the template** — Meta Business Manager → WhatsApp Manager →
-   Message Templates → Create Template:
-   - Category: **Utility**
-   - Name: `resume_pdf_update` (must match exactly — this is what the script
-     sends; override with a `WHATSAPP_TEMPLATE_NAME` repo variable if you use
-     a different name)
-   - Language: **English (US)**
-   - Header type: **Document** (you'll be asked to upload a sample PDF just
-     for the review preview — any PDF works, it's not the one actually sent)
-   - Body: e.g. "Your resume has just been updated. Please find the latest
-     version attached."
-   - Submit for review. Utility templates are usually approved within
-     minutes, occasionally up to 24h — check its status is **Active** in
-     WhatsApp Manager before expecting sends to succeed.
 
 ### 2. Each tracked project repository
 
