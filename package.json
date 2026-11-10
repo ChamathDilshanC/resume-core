@@ -14,6 +14,9 @@
     "upload-to-drive": "node scripts/upload-to-drive.js",
     "sync-drive-folders": "node scripts/sync-drive-folders.js",
     "send-email": "node scripts/send-email.js",
+    "send-telegram": "node scripts/send-telegram.js",
+    "send-discord": "node scripts/send-discord.js",
+    "send-deliveries": "node scripts/send-deliveries.js",
     "test": "node --test scripts/lib/*.test.js"
   },
   "author": "ChamathDilshanC",

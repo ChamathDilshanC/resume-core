@@ -56,7 +56,7 @@ sequenceDiagram
     Core->>Core: merge into resume.json<br/>(projects[] or work[], in resume-data)
     Core->>PDF: render template.html + resume.json
     PDF-->>Core: resume.pdf
-    Core->>Core: push resume.json to resume-data,<br/>upload resume.pdf to Google Drive,<br/>email it (+ close issue for Flow B)
+    Core->>Core: push resume.json to resume-data,<br/>upload resume.pdf to Google Drive,<br/>email it, then notify Telegram + Discord (+ close issue for Flow B)
 ```
 
 ## Component graph
@@ -86,6 +86,9 @@ flowchart LR
 
     PDF --> UP["upload-to-drive.js<br/>files.update, fixed file ID"]
     PDF --> EM["send-email.js<br/>Gmail SMTP"]
+    PDF --> DL["send-deliveries.js<br/>independent channel results"]
+    DL --> TG["send-telegram.js<br/>Bot API"]
+    DL --> DC["send-discord.js<br/>Webhook API"]
 
     SDF["sync-drive-folders.js<br/>+ lib/mockup-sync.js"] -.->|"separate workflow,<br/>triggered from resume-admin"| DATA
 
@@ -113,6 +116,9 @@ scripts/
   lib/project-folder-name.js       Resolves the Drive folder name for a project (repo name, or display name as fallback)
   lib/mockup-sync.js               Pure reconciliation of Drive files <-> resume.json's per-project mockups array
   send-email.js                    Emails resume.pdf (with a Drive link) via Gmail SMTP
+  send-telegram.js                 Sends resume.pdf and optional images through the Telegram Bot API
+  send-discord.js                  Sends resume.pdf and optional images through a Discord webhook
+  send-deliveries.js               Runs both notification channels independently and reports each result
   discover-projects.js             Scans your repos and auto-tags untracked meta-repos with resume-project
 .github/workflows/
   update-resume.yml                Flow A: repository_dispatch -> AI -> merge -> PDF -> upload to Drive
@@ -166,10 +172,20 @@ it (see **One-time setup** below).
     regular Google account password, which Gmail's SMTP rejects.
   - `RECIPIENT_EMAIL` — the address that receives the resume. Can be the
     same address as `SMTP_USER` to just email yourself.
+  - `TELEGRAM_BOT_TOKEN` — token issued by Telegram's `@BotFather`.
+  - `TELEGRAM_CHAT_ID` — private chat, group or channel ID that receives the
+    generated resume.
+  - `DISCORD_WEBHOOK_URL` — incoming webhook URL for the destination channel.
 - **Settings → Secrets and variables → Actions → Variables** *(optional)*:
   - `AI_MODEL` — override the first Gemini model tried (falls back through
     `gemini-flash-latest` → `gemini-flash-lite-latest` → `gemini-3.6-flash`
     regardless).
+  - `DELIVERY_IMAGE_PATHS` — comma- or newline-separated repository-relative
+    PNG, JPG, JPEG or WEBP paths to send after/with the PDF. Missing optional
+    files are logged and skipped safely.
+  - `DISCORD_MAX_UPLOAD_BYTES` — override Discord's conservative default
+    20 MiB combined attachment check when the destination server supports a
+    larger limit.
 
 ### Google Drive upload
 
@@ -238,6 +254,65 @@ optionally with a `repo_full_name` input to sync just one project):
 Submodules never get their own folder — only entries in `resume.json`'s
 `projects` array with `repositoryType` unset or `"MAIN"` are synced (see
 **Submodule handling** in `architecture.md`).
+
+### Telegram and Discord delivery
+
+The three resume-producing workflows call `scripts/send-deliveries.js` only
+after `resume.pdf` exists. Telegram and Discord are attempted independently:
+one channel failing never prevents the other attempt. Each result is logged
+separately, and any configured channel that fails still fails the workflow
+after both attempts finish. A channel whose credentials are entirely absent is
+clearly reported as skipped; a partially configured Telegram channel is an
+error rather than a silent skip.
+
+#### Telegram Bot setup
+
+1. Open Telegram's verified `@BotFather`, run `/newbot`, and follow the prompts.
+2. Save the issued token as the `TELEGRAM_BOT_TOKEN` GitHub Actions secret.
+3. Start a chat with the bot and send it a message. For a group, add the bot to
+   the group and send a message there.
+4. Open `https://api.telegram.org/bot<TOKEN>/getUpdates` privately and read the
+   destination's `message.chat.id`. Group IDs are normally negative. Save only
+   that ID as the `TELEGRAM_CHAT_ID` secret; never commit either value.
+
+The integration uses `sendDocument` for the PDF and `sendPhoto` for optional
+images. It checks Telegram's 50 MiB document and 10 MiB photo limits before
+uploading.
+
+#### Discord webhook setup
+
+1. In Discord, open the destination channel's **Edit Channel → Integrations →
+   Webhooks**, create a webhook, and copy its URL.
+2. Save the complete URL as the `DISCORD_WEBHOOK_URL` GitHub Actions secret.
+
+The webhook sends `multipart/form-data` with the PDF and any optional images.
+It sets `allowed_mentions.parse` to an empty list, so notification text cannot
+trigger `@everyone`, users or roles. The default validation allows at most ten
+attachments and 20 MiB combined; set `DISCORD_MAX_UPLOAD_BYTES` only when the
+destination server has a confirmed higher limit.
+
+#### Manual test and troubleshooting
+
+Open **Actions → Regenerate Resume PDF → Run workflow**. The optional
+`delivery_image_paths` input overrides `DELIVERY_IMAGE_PATHS` for that run.
+Leaving it empty sends only the generated PDF. This manual workflow uses the
+same artifact for Drive, email, Telegram and Discord, and repository
+concurrency prevents overlapping resume update runs. None of the delivery
+workflows run on `pull_request`, so untrusted pull requests cannot read the
+delivery secrets.
+
+If delivery fails:
+
+- Check the individual `[telegram]` and `[discord]` result lines in the job log.
+- Confirm all required secrets exist and that the bot/webhook still has access
+  to its destination.
+- Check PDF/image sizes and optional image paths. Missing optional images are
+  warnings; a missing PDF is a hard failure.
+- HTTP 429 responses honor `Retry-After`/`retry_after` and retry automatically.
+  Network calls have a timeout and fail without retrying an ambiguous upload,
+  which avoids duplicate notifications after a connection failure.
+- Never paste a token or webhook URL into an issue or workflow log. Rotate the
+  credential immediately if it is exposed.
 
 ### 2. Each tracked project repository
 

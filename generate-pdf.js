@@ -121,8 +121,8 @@ async function resolveImageToDataUri(imagePath) {
   return `data:${mimeType};base64,${buffer.toString("base64")}`;
 }
 
-// Human-facing filename used by the delivery channels (Drive and email):
-// "<Name> <Label> Resume.pdf", e.g. "Chamath Dilshan Intern
+// Human-facing filename used by the delivery channels (Drive, email,
+// Telegram and Discord): "<Name> <Label> Resume.pdf", e.g. "Chamath Dilshan Intern
 // DevOps Resume.pdf". The repo keeps the stable resume.pdf; the display
 // name travels alongside it in resume-name.txt.
 function pdfDisplayName(resumeData) {
