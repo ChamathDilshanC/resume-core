@@ -124,30 +124,92 @@ jobs:
           GDRIVE_FILE_ID: ${{ secrets.GDRIVE_FILE_ID }}
         run: node scripts/send-email.js
 
-  deliver-notifications:
+  send-telegram:
+    name: Telegram Bot delivery
     needs: send-email
     runs-on: ubuntu-latest
     steps:
+      - name: Check Telegram configuration
+        id: config
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          if [[ -z "$TELEGRAM_BOT_TOKEN" && -z "$TELEGRAM_CHAT_ID" ]]; then
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Telegram delivery skipped because TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID are not configured."
+          elif [[ -z "$TELEGRAM_BOT_TOKEN" || -z "$TELEGRAM_CHAT_ID" ]]; then
+            echo "::error::Telegram delivery requires both TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID."
+            exit 1
+          else
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Checkout resume-core
+        if: steps.config.outputs.configured == 'true'
         uses: actions/checkout@v4
         with:
           ref: main
 
       - name: Download resume.pdf artifact
+        if: steps.config.outputs.configured == 'true'
         uses: actions/download-artifact@v4
         with:
           name: resume-pdf
 
       - name: Setup Node.js
+        if: steps.config.outputs.configured == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: "20"
 
-      - name: Deliver resume.pdf to Telegram and Discord
+      - name: Send resume.pdf to Telegram
+        if: steps.config.outputs.configured == 'true'
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          DELIVERY_IMAGE_PATHS: ${{ inputs.delivery_image_paths || vars.DELIVERY_IMAGE_PATHS }}
+        run: node scripts/send-telegram.js
+
+  send-discord:
+    name: Discord webhook delivery
+    needs: send-email
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Discord configuration
+        id: config
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          if [[ -z "$DISCORD_WEBHOOK_URL" ]]; then
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Discord delivery skipped because DISCORD_WEBHOOK_URL is not configured."
+          else
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout resume-core
+        if: steps.config.outputs.configured == 'true'
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Download resume.pdf artifact
+        if: steps.config.outputs.configured == 'true'
+        uses: actions/download-artifact@v4
+        with:
+          name: resume-pdf
+
+      - name: Setup Node.js
+        if: steps.config.outputs.configured == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Send resume.pdf to Discord
+        if: steps.config.outputs.configured == 'true'
+        env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           DELIVERY_IMAGE_PATHS: ${{ inputs.delivery_image_paths || vars.DELIVERY_IMAGE_PATHS }}
           DISCORD_MAX_UPLOAD_BYTES: ${{ vars.DISCORD_MAX_UPLOAD_BYTES }}
-        run: node scripts/send-deliveries.js
+        run: node scripts/send-discord.js

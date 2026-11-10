@@ -257,13 +257,14 @@ Submodules never get their own folder — only entries in `resume.json`'s
 
 ### Telegram and Discord delivery
 
-The three resume-producing workflows call `scripts/send-deliveries.js` only
-after `resume.pdf` exists. Telegram and Discord are attempted independently:
-one channel failing never prevents the other attempt. Each result is logged
-separately, and any configured channel that fails still fails the workflow
-after both attempts finish. A channel whose credentials are entirely absent is
-clearly reported as skipped; a partially configured Telegram channel is an
-error rather than a silent skip.
+The automated update workflows call `scripts/send-deliveries.js` after
+`resume.pdf` exists. The manual `regenerate-pdf.yml` workflow displays two
+parallel jobs after email delivery: **Telegram Bot delivery** and **Discord
+webhook delivery**. In both designs, one channel failing never prevents the
+other attempt. Each result is reported separately, and a configured channel
+failure is never marked successful. A channel whose credentials are entirely
+absent is clearly reported as skipped; a partially configured Telegram channel
+is an error rather than a silent skip.
 
 #### Telegram Bot setup
 
