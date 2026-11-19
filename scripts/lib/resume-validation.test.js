@@ -35,3 +35,16 @@ test("corrects verified projekts typo only as a suggested correction", () => {
   assert.ok(typo);
   assert.equal(typo.automaticCorrectionSafe, true);
 });
+
+test("does not invent metrics or convert weak achievements into confirmed claims", () => {
+  const result = validateResume({
+    basics: { name: "Test", email: "test@example.com", label: "Engineer", summary: "Engineer." },
+    skills: [{ name: "Cloud", keywords: ["AWS", "Docker"] }],
+    work: [{ startDate: "2024", endDate: "Present", highlights: ["Managed cloud infrastructure."] }],
+    projects: [],
+  });
+  assert.ok(result.findings.some((item) =>
+    item.field.includes("highlights") &&
+    item.description.includes("No verified quantifiable result")
+  ));
+});
