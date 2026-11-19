@@ -20,6 +20,15 @@ test("Signal ATS CSS avoids flex, grid, tables, and text-box positioning", () =>
   assert.doesNotMatch(css, /(^|[,{]\s*)table\b/i);
 });
 
+test("Signal contact and project entries use line breaks instead of separator spans", () => {
+  const html = fs.readFileSync(path.join(templateDir, "template.html"), "utf8");
+  assert.match(html, /mailto:/);
+  assert.match(html, /<br \/><a href="tel:/);
+  assert.doesNotMatch(html, /\s\|\s<a href="/);
+  const projectSection = html.slice(html.indexOf('<h2>Projects</h2>'), html.indexOf("<h2>Education</h2>"));
+  assert.doesNotMatch(projectSection, /<div class="entry-title">/);
+});
+
 test("PDF exporter defines a default compact project limit and searchable-text checks", () => {
   const generator = fs.readFileSync(path.join(templateDir, "..", "..", "generate-pdf.js"), "utf8");
   assert.match(generator, /projectLimit\s*[^;]*3|resumeFormat\.projectLimit/);

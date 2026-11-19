@@ -14,13 +14,13 @@
     {{#if basics.label}}<p class="headline">{{basics.label}}</p>{{/if}}
     <p class="contact">
       {{#if basics.email}}<a href="mailto:{{basics.email}}">{{basics.email}}</a>{{/if}}
-      {{#if basics.phone}} | <a href="tel:{{basics.phone}}">{{basics.phone}}</a>{{/if}}
-      {{#if basics.location.city}} | {{basics.location.city}}{{#if basics.location.countryCode}}, {{countryName basics.location.countryCode}}{{/if}}{{else}}{{#if basics.location.countryCode}} | {{countryName basics.location.countryCode}}{{/if}}{{/if}}
+      {{#if basics.phone}}<br /><a href="tel:{{basics.phone}}">{{basics.phone}}</a>{{/if}}
+      {{#if basics.location.city}}<br />{{basics.location.city}}{{#if basics.location.countryCode}}, {{countryName basics.location.countryCode}}{{/if}}{{else}}{{#if basics.location.countryCode}}<br />{{countryName basics.location.countryCode}}{{/if}}{{/if}}
     </p>
     <p class="contact">
       {{#if basics.url}}<a href="{{basics.url}}">{{stripProtocol basics.url}}</a>{{/if}}
       {{#each basics.profiles}}
-        {{#if url}} | <a href="{{url}}">{{stripProtocol url}}</a>{{else}}{{#if username}} | {{#if network}}{{network}}: {{/if}}{{username}}{{/if}}{{/if}}
+        {{#if url}}<br /><a href="{{url}}">{{stripProtocol url}}</a>{{else}}{{#if username}}<br />{{#if network}}{{network}}: {{/if}}{{username}}{{/if}}{{/if}}
       {{/each}}
     </p>
   </header>
@@ -66,10 +66,8 @@
     {{#each projects}}
     <article class="entry">
       <div class="entry-heading">
-        <div class="entry-title">
-          {{#if name}}<h3>{{name}}</h3>{{/if}}
-          {{#if role}}<p class="organization">{{role}}</p>{{/if}}
-        </div>
+        {{#if name}}<h3>{{name}}</h3>{{/if}}
+        {{#if role}}<p class="organization">{{role}}</p>{{/if}}
         {{#if (dateRange startDate endDate)}}<p class="dates">{{dateRange startDate endDate}}</p>{{/if}}
       </div>
       {{#if description}}<p class="scope">{{description}}</p>{{/if}}
