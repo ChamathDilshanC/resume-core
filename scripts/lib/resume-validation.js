@@ -108,7 +108,7 @@ function validateBullet(findings, bullet, field, section) {
     findings.push(finding("advisory", section, field, "Achievement uses weak, vague phrasing.", "Use a specific action verb and factual contribution.", false));
   }
   if (!/(%|[0-9][0-9+]*\s*(projects?|bugs?|users?|files?|requests?|tests?|servers?|deployments?|minutes?|hours?|weeks?|months?|years?)\b|\b(10\+|150\+)\b)/i.test(text) &&
-      /^(built|developed|implemented|designed|engineered|optimized|automated|integrated|delivered)\b/i.test(text)) {
+      /^(built|developed|implemented|designed|engineered|optimized|automated|integrated|delivered|managed|created|maintained|supported)\b/i.test(text)) {
     findings.push(finding("advisory", section, field, "No verified quantifiable result is stated.", "Quantifiable result available? Add a verified metric.", false));
   }
 }

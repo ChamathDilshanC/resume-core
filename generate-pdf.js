@@ -64,6 +64,22 @@ Handlebars.registerHelper("stripProtocol", function (url) {
   return (url || "").replace(/^https?:\/\//i, "").replace(/\/$/, "");
 });
 
+// Rendering-only ATS typo normalization: never overwrite resume.json or
+// presentation of other templates' saved source data.
+const ATS_TEXT_CORRECTIONS = {
+  Teraform: "Terraform",
+  Superbase: "Supabase",
+  projekts: "projects",
+};
+
+Handlebars.registerHelper("atsText", function (value) {
+  let text = String(value || "");
+  for (const [incorrect, corrected] of Object.entries(ATS_TEXT_CORRECTIONS)) {
+    text = text.replace(new RegExp(`\\b${incorrect}\\b`, "gi"), corrected);
+  }
+  return text;
+});
+
 // ATS wants "City, Country" spelled out, but resume.json stores ISO codes.
 const COUNTRY_NAMES = {
   LK: "Sri Lanka",
@@ -141,7 +157,28 @@ function pdfDisplayName(resumeData) {
 
 async function generateResumePdf() {
   const sourceData = await fs.readJson(RESUME_JSON_PATH);
-  const resumeData = { ...sourceData, projects: sourceData.projects?.filter((project) => project.includeInResume !== false) };
+  const templateNameHint = sourceData.template || process.env.RESUME_TEMPLATE || DEFAULT_TEMPLATE;
+  const includedProjects = sourceData.projects?.filter((project) => project.includeInResume !== false) || [];
+  const resumeFormat = sourceData.resumeFormat || {};
+  const projectLimit = templateNameHint === "signal-ats"
+    ? (Number.isFinite(resumeFormat.projectLimit) ? resumeFormat.projectLimit : 3)
+    : (Number.isFinite(resumeFormat.projectLimit) ? resumeFormat.projectLimit : includedProjects.length);
+  const optimizedProjects = projectLimit > 0 ? includedProjects.slice(0, projectLimit) : includedProjects;
+  const renderedProjects = templateNameHint === "signal-ats"
+    ? optimizedProjects.map((project) => ({
+        ...project,
+        description: "",
+        highlights: (project.highlights || []).slice(0, 2),
+        technologies: (project.technologies || []).slice(0, 10),
+      }))
+    : optimizedProjects;
+  const resumeData = {
+    ...sourceData,
+    projects: renderedProjects,
+    references: templateNameHint === "signal-ats" && resumeFormat.includeReferences !== true
+      ? []
+      : sourceData.references,
+  };
   const validation = validateResume(resumeData);
   const criticalFindings = validation.findings.filter((item) => item.severity === "critical");
   if (criticalFindings.length) {
@@ -197,6 +234,11 @@ async function generateResumePdf() {
     }
     if (resumeData.basics?.email && !extractedText.includes(resumeData.basics.email)) {
       throw new Error("Candidate email was lost from the searchable PDF text.");
+    }
+    if (templateName === "signal-ats" &&
+        resumeFormat.projectLimit == null &&
+        parsedPdf.numpages > 2) {
+      throw new Error(`Optimized Signal PDF is ${parsedPdf.numpages} pages; maximum is 2.`);
     }
     console.log(`PDF extraction check passed: ${parsedPdf.numpages} page(s), ${extractedText.length} characters.`);
   } finally {
