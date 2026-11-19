@@ -39,14 +39,6 @@ a {
   margin-bottom: 14px;
 }
 
-.header .avatar {
-  width: 90px;
-  height: 90px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-bottom: 8px;
-}
-
 .header .name {
   font-size: 15pt;
   font-weight: 700;

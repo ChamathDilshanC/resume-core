@@ -8,7 +8,6 @@
 <body>
 
   <header class="header">
-    {{#if basics.image}}<img class="avatar" src="{{basics.image}}" alt="{{basics.name}}" />{{/if}}
     <h1 class="name">{{basics.name}}</h1>
     {{#if basics.label}}<p class="label">{{basics.label}}</p>{{/if}}
   </header>
@@ -22,23 +21,13 @@
 
   <div class="section section-atomic">
     <h2 class="section-title">Contact Information</h2>
-    <ul class="contact-grid">
-      {{#if basics.phone}}
-      <li class="contact-row"><span class="contact-icon">{{{icon "phone"}}}</span><span class="contact-text"><b>Phone:</b> {{basics.phone}}</span></li>
-      {{/if}}
-      {{#if basics.email}}
-      <li class="contact-row"><span class="contact-icon">{{{icon "mail"}}}</span><span class="contact-text"><b>Email:</b> <a href="mailto:{{basics.email}}">{{basics.email}}</a></span></li>
-      {{/if}}
-      {{#if basics.url}}
-      <li class="contact-row"><span class="contact-icon">{{{icon "user"}}}</span><span class="contact-text"><b>Personal Website:</b> <a href="{{basics.url}}">{{stripProtocol basics.url}}</a></span></li>
-      {{/if}}
-      {{#each basics.profiles}}
-      <li class="contact-row"><span class="contact-icon">{{{icon this.network}}}</span><span class="contact-text"><b>{{this.network}}:</b> {{#if this.url}}<a href="{{this.url}}">{{this.username}}</a>{{else}}{{this.username}}{{/if}}</span></li>
-      {{/each}}
-      {{#if basics.location.city}}
-      <li class="contact-row"><span class="contact-icon">{{{icon "home"}}}</span><span class="contact-text"><b>Address:</b> {{basics.location.city}}{{#if basics.location.countryCode}}, {{countryName basics.location.countryCode}}{{/if}}</span></li>
-      {{/if}}
-    </ul>
+    <p class="contact-line">
+      {{#if basics.email}}<a href="mailto:{{basics.email}}">{{basics.email}}</a>{{/if}}
+      {{#if basics.phone}}{{#if basics.email}} | {{/if}}{{basics.phone}}{{/if}}
+      {{#if basics.location.city}}{{#if basics.email}}{{else}}{{#if basics.phone}} | {{/if}}{{/if}}{{basics.location.city}}{{#if basics.location.countryCode}}, {{countryName basics.location.countryCode}}{{/if}}{{/if}}
+    </p>
+    {{#if basics.url}}<p class="contact-line"><a href="{{basics.url}}">{{stripProtocol basics.url}}</a></p>{{/if}}
+    {{#each basics.profiles}}{{#if url}}<p class="contact-line">{{#if network}}{{network}}: {{/if}}<a href="{{url}}">{{stripProtocol url}}</a></p>{{/if}}{{/each}}
   </div>
 
   {{#if work.length}}
@@ -64,7 +53,7 @@
 
   {{#if skills.length}}
   <div class="section section-atomic">
-    <h2 class="section-title">Areas of Expertise</h2>
+    <h2 class="section-title">Technical Skills</h2>
     <ul class="simple-list">
       {{#each skills}}
       <li><b>{{this.name}}:</b> {{joinList this.keywords}}</li>

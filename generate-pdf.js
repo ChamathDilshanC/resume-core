@@ -2,6 +2,8 @@ const fs = require("fs-extra");
 const path = require("path");
 const Handlebars = require("handlebars");
 const puppeteer = require("puppeteer");
+const pdfParse = require("pdf-parse");
+const { validateResume } = require("./scripts/lib/resume-validation");
 
 const ROOT = __dirname;
 const RESUME_JSON_PATH = process.env.RESUME_JSON_PATH || path.join(ROOT, "data", "resume.json");
@@ -140,6 +142,15 @@ function pdfDisplayName(resumeData) {
 async function generateResumePdf() {
   const sourceData = await fs.readJson(RESUME_JSON_PATH);
   const resumeData = { ...sourceData, projects: sourceData.projects?.filter((project) => project.includeInResume !== false) };
+  const validation = validateResume(resumeData);
+  const criticalFindings = validation.findings.filter((item) => item.severity === "critical");
+  if (criticalFindings.length) {
+    const summary = criticalFindings.map((item) => `${item.field}: ${item.description}`).join("\n");
+    throw new Error(`Resume export blocked by critical validation findings:\n${summary}`);
+  }
+  for (const warning of validation.findings.filter((item) => item.severity !== "critical")) {
+    console.warn(`Resume validation ${warning.severity}: ${warning.field}: ${warning.description}`);
+  }
 
   const templateName = resumeData.template || process.env.RESUME_TEMPLATE || DEFAULT_TEMPLATE;
   const templateDir = path.join(TEMPLATES_DIR, templateName);
@@ -174,6 +185,20 @@ async function generateResumePdf() {
       printBackground: true,
       margin: { top: "12mm", bottom: "12mm", left: "15mm", right: "15mm" },
     });
+
+    const pdfBuffer = await fs.readFile(OUTPUT_PDF_PATH);
+    const parsedPdf = await pdfParse(pdfBuffer);
+    const extractedText = parsedPdf.text || "";
+    if (!extractedText.trim()) {
+      throw new Error("Generated PDF contains no searchable text.");
+    }
+    if (resumeData.basics?.name && !extractedText.includes(resumeData.basics.name)) {
+      throw new Error("Candidate name was lost from the searchable PDF text.");
+    }
+    if (resumeData.basics?.email && !extractedText.includes(resumeData.basics.email)) {
+      throw new Error("Candidate email was lost from the searchable PDF text.");
+    }
+    console.log(`PDF extraction check passed: ${parsedPdf.numpages} page(s), ${extractedText.length} characters.`);
   } finally {
     await browser.close();
   }
