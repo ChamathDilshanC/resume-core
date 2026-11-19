@@ -8,7 +8,6 @@
 <body>
 
   <div class="header">
-    {{#if basics.image}}<img class="avatar" src="{{basics.image}}" alt="{{basics.name}}" />{{/if}}
     <h1 class="name">{{basics.name}}</h1>
     <p class="label">{{basics.label}}</p>
     <div class="contact">
@@ -67,7 +66,7 @@
   <div class="section">
     {{#each projects}}
     <div class="project-item">
-      {{#if @first}}<h2 class="section-title">Key Projects</h2>{{/if}}
+      {{#if @first}}<h2 class="section-title">Projects</h2>{{/if}}
       <div class="item-header">
         <h3 class="item-heading"><span class="item-role">{{this.name}}</span>{{#if this.description}} <span class="item-description">&mdash; {{this.description}}</span>{{/if}}</h3>
       </div>

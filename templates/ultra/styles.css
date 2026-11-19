@@ -53,13 +53,6 @@ a {
   flex: 1;
 }
 
-.header .avatar {
-  width: 80px;
-  height: 80px;
-  border-radius: 12px;
-  object-fit: cover;
-}
-
 .header .name {
   font-size: 17pt;
   font-weight: 800;
