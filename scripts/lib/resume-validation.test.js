@@ -1,6 +1,6 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
-const { validateResume } = require("./resume-validation");
+const { validateResume, analyzeAchievementEvidence } = require("./resume-validation");
 
 test("flags missing required resume fields", () => {
   const result = validateResume({ basics: {}, work: [], skills: [] });
@@ -47,4 +47,19 @@ test("does not invent metrics or convert weak achievements into confirmed claims
     item.field.includes("highlights") &&
     item.description.includes("No verified quantifiable result")
   ));
+});
+
+test("returns only metrics already present in source or documented project evidence", () => {
+  const resume = {
+    work: [{ highlights: [
+      "Developed integrations across 10+ live client projects.",
+      "Resolved 150+ production bugs within the first 3 weeks.",
+    ] }],
+    projects: [{
+      evidence: { contribution: "The system includes 22 built-in email templates." },
+    }],
+  };
+  const suggestions = analyzeAchievementEvidence(resume);
+  assert.equal(suggestions.length, 2);
+  assert.ok(suggestions.every((item) => item.status === "verified" || item.status === "documented-evidence"));
 });
