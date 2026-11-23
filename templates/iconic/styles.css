@@ -53,6 +53,14 @@ a {
   border: 1px solid #d1d5db;
 }
 
+.brand-icon {
+  display: block;
+  width: 44px;
+  height: 18px;
+  object-fit: contain;
+  margin: 0 auto 8px;
+}
+
 .header .avatar {
   width: 86px;
   height: 86px;

@@ -53,6 +53,14 @@ a {
   flex: 1;
 }
 
+.brand-icon {
+  display: block;
+  width: 44px;
+  height: 18px;
+  object-fit: contain;
+  margin-bottom: 4px;
+}
+
 .profile-photo {
   width: 86px;
   height: 86px;

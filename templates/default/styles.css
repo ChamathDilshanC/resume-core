@@ -48,6 +48,14 @@ a {
   flex: 1;
 }
 
+.brand-icon {
+  display: block;
+  width: 44px;
+  height: 18px;
+  object-fit: contain;
+  margin: 0 auto 6px;
+}
+
 .profile-photo {
   position: absolute;
   top: 0;

@@ -9,6 +9,7 @@
 
   <header class="header">
     {{#if basics.includeProfileImage}}{{#if basics.image}}<img class="profile-photo" src="{{basics.image}}" alt="{{basics.name}}" />{{/if}}{{/if}}
+    {{#if basics.includeBrandIcon}}{{#if basics.brandIcon}}<img class="brand-icon" src="{{basics.brandIcon}}" alt="" aria-hidden="true" />{{/if}}{{/if}}
     <h1 class="name">{{basics.name}}</h1>
     {{#if basics.label}}<p class="label">{{basics.label}}</p>{{/if}}
   </header>

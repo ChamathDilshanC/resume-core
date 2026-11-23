@@ -48,6 +48,7 @@ strong { font-weight: 700; }
 /* Header: name, the role being targeted, then plain-text contact lines. */
 .header { display: flow-root; padding-bottom: var(--space-4); border-bottom: 2px solid var(--accent); }
 .profile-photo { float: right; width: 86px; height: 86px; margin-left: 16px; border-radius: 50%; object-fit: cover; border: 1px solid var(--border); }
+.brand-icon { display: block; width: 44px; height: 18px; object-fit: contain; margin-bottom: 4px; }
 h1 { margin: 0; font-size: 24pt; line-height: 1.1; font-weight: 700; letter-spacing: 0.2px; }
 .headline { margin-top: var(--space-2); font-size: 12pt; font-weight: 700; color: var(--accent); }
 .contact { margin-top: var(--space-2); font-size: 9.5pt; color: var(--text-secondary); }
