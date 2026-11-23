@@ -11,7 +11,6 @@ const TEMPLATES_DIR = path.join(ROOT, "templates");
 const DEFAULT_TEMPLATE = "default";
 const OUTPUT_PDF_PATH = path.join(ROOT, "resume.pdf");
 const OUTPUT_NAME_PATH = path.join(ROOT, "resume-name.txt");
-const BRAND_ICON_ASSET_PATH = "assets/brand-icon-black.png";
 
 Handlebars.registerHelper("joinList", function (list) {
   if (!Array.isArray(list)) return "";
@@ -201,14 +200,6 @@ async function generateResumePdf() {
   // Photo-free templates should not depend on an unused image asset existing.
   if (templateSource.includes("basics.image") && resumeData.basics?.image) {
     resumeData.basics.image = await resolveImageToDataUri(resumeData.basics.image);
-  }
-  if (resumeData.basics?.includeBrandIcon) {
-    try {
-      resumeData.basics.brandIcon = await resolveImageToDataUri(BRAND_ICON_ASSET_PATH);
-    } catch (error) {
-      resumeData.basics.brandIcon = "";
-      console.warn(`Brand icon could not be loaded: ${error.message}`);
-    }
   }
 
   const template = Handlebars.compile(templateSource);

@@ -11,6 +11,8 @@ test("Signal ATS template uses conventional sections and plain-text contact stru
   assert.match(html, /<h2>Work Experience<\/h2>/);
   assert.match(html, /<h2>Projects<\/h2>/);
   assert.match(html, /mailto:/);
+  assert.match(html, /basics\.hideDeclaration/);
+  assert.match(html, /basics\.targetCompany/);
   assert.doesNotMatch(html, /<table\b|position\s*:\s*absolute|<textarea\b/i);
 });
 

@@ -35,7 +35,8 @@ and supply its path through `RESUME_JSON_PATH`. The existing renderer creates th
 - **Education and Certifications:** keep relevant qualifications concise.
 - **References:** opt in using `basics.includeReferences` when requested.
 
-Photos and the closing declaration are excluded in this template. Other layouts
+Photos are excluded in this template. The closing declaration is optional and
+respects `basics.hideDeclaration`. Other layouts
 continue to use their existing settings. All content stays selectable; no layout
 tables, columns, remote fonts, icons, rating bars or hidden keywords. Body text is
 10.5pt Arial with restrained navy headings, 15mm horizontal / 12mm vertical margins.
