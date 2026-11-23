@@ -28,11 +28,15 @@ test("Signal profile photo is contained at the top of the header", () => {
   assert.match(css, /\.header\s*\{[^}]*display:\s*flow-root;/s);
 });
 
-test("Signal contact and project entries use line breaks instead of separator spans", () => {
+test("Signal contact details stay in two compact rows", () => {
   const html = fs.readFileSync(path.join(templateDir, "template.html"), "utf8");
   assert.match(html, /mailto:/);
-  assert.match(html, /<br \/><a href="tel:/);
-  assert.doesNotMatch(html, /\s\|\s<a href="/);
+  assert.match(html, /\|\s*<a href="tel:/);
+  assert.match(html, /\|\s*<a href="/);
+  const contactRows = html.match(/<p class="contact">[\s\S]*?<\/p>/g) || [];
+  assert.equal(contactRows.length, 2);
+  assert.doesNotMatch(contactRows[0], /<br\s*\/?\s*>/i);
+  assert.doesNotMatch(contactRows[1], /<br\s*\/?\s*>/i);
   const projectSection = html.slice(html.indexOf('<h2>Projects</h2>'), html.indexOf("<h2>Education</h2>"));
   assert.doesNotMatch(projectSection, /<div class="entry-title">/);
 });
