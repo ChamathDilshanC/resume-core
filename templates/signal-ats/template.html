@@ -12,7 +12,6 @@
   <header class="header">
     {{#if basics.includeProfileImage}}{{#if basics.image}}<img class="profile-photo" src="{{basics.image}}" alt="{{basics.name}}" />{{/if}}{{/if}}
     <div class="header-main">
-      {{#if basics.includeBrandIcon}}{{#if basics.brandIcon}}<img class="brand-icon" src="{{basics.brandIcon}}" alt="" aria-hidden="true" />{{/if}}{{/if}}
       {{#if basics.name}}<h1>{{basics.name}}</h1>{{/if}}
       {{#if basics.label}}<p class="headline">{{basics.label}}</p>{{/if}}
       <p class="contact">
@@ -127,5 +126,11 @@
   </section>
   {{/if}}
   {{/if}}
+
+  {{#unless basics.hideDeclaration}}
+  <section class="declaration">
+    <p>I hereby certify that the above particulars given by me are true and accurate to the best of my knowledge. {{#if basics.targetCompany}}If given the opportunity to serve at {{basics.targetCompany}}, I assure you{{else}}If given the opportunity to serve in your esteemed organization, I assure you{{/if}} that I shall perform my duties with commitment and loyalty.</p>
+  </section>
+  {{/unless}}
 </body>
 </html>

@@ -21,16 +21,17 @@ result, AI use) are drafting inputs for the AI and are never printed.
 
 ## ATS safety
 
-- One column, no tables, icons, rating bars, text boxes or remote fonts; the optional
+- One column, no tables, decorative icons, rating bars, text boxes or remote fonts; the optional
   profile photo stays in the header and never changes the text flow below it.
 - Standard section names: Professional Summary, Core Skills, Work Experience,
   Projects, Education, Certifications, References.
 - Arial 10pt, selectable text, real hyperlinks, dates in the same entry heading.
 - Dates follow the title and organization in the same block flow, so the text
   order stays title, organization, dates.
-- No closing declaration. The photo is optional and renders only when
-  `basics.includeProfileImage` and `basics.image` are set. References print only when
-  `basics.includeReferences` is true.
+- The closing declaration is optional and is hidden when `basics.hideDeclaration` is
+  true. The target company is included when `basics.targetCompany` is set. The photo
+  renders only when `basics.includeProfileImage` and `basics.image` are set.
+  References print only when `basics.includeReferences` is true.
 - Contact details are in the body, not a page header or footer.
 
 No template guarantees a universal ATS score or that every vendor parses it.
