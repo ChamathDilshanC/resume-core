@@ -35,8 +35,28 @@ a {
 
 /* Header */
 .header {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
   text-align: center;
   margin-bottom: 14px;
+}
+
+.header-main {
+  min-width: 0;
+  flex: 1;
+}
+
+.profile-photo {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 86px;
+  height: 86px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #d1d5db;
 }
 
 .header .name {

@@ -53,6 +53,15 @@ a {
   flex: 1;
 }
 
+.profile-photo {
+  width: 86px;
+  height: 86px;
+  flex: 0 0 86px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #d1d5db;
+}
+
 .header .name {
   font-size: 17pt;
   font-weight: 800;

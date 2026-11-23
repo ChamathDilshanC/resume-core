@@ -23,6 +23,7 @@
         {{/each}}
       </p>
     </div>
+    {{#if basics.includeProfileImage}}{{#if basics.image}}<img class="profile-photo" src="{{basics.image}}" alt="{{basics.name}}" />{{/if}}{{/if}}
   </header>
 
   {{#if basics.summary}}
