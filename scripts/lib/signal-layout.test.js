@@ -20,6 +20,14 @@ test("Signal ATS CSS avoids flex, grid, tables, and text-box positioning", () =>
   assert.doesNotMatch(css, /(^|[,{]\s*)table\b/i);
 });
 
+test("Signal profile photo is contained at the top of the header", () => {
+  const html = fs.readFileSync(path.join(templateDir, "template.html"), "utf8");
+  const css = fs.readFileSync(path.join(templateDir, "styles.css"), "utf8");
+  const header = html.slice(html.indexOf('<header class="header">'), html.indexOf("</header>"));
+  assert.ok(header.indexOf('class="profile-photo"') < header.indexOf('class="header-main"'));
+  assert.match(css, /\.header\s*\{[^}]*display:\s*flow-root;/s);
+});
+
 test("Signal contact and project entries use line breaks instead of separator spans", () => {
   const html = fs.readFileSync(path.join(templateDir, "template.html"), "utf8");
   assert.match(html, /mailto:/);

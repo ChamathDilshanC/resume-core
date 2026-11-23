@@ -10,6 +10,7 @@
   <!-- Reading order mirrors a recruiter's questions: who is this, are they relevant,
        what did they actually do, how have they grown. Single column, plain text order. -->
   <header class="header">
+    {{#if basics.includeProfileImage}}{{#if basics.image}}<img class="profile-photo" src="{{basics.image}}" alt="{{basics.name}}" />{{/if}}{{/if}}
     <div class="header-main">
       {{#if basics.name}}<h1>{{basics.name}}</h1>{{/if}}
       {{#if basics.label}}<p class="headline">{{basics.label}}</p>{{/if}}
@@ -25,7 +26,6 @@
         {{/each}}
       </p>
     </div>
-    {{#if basics.includeProfileImage}}{{#if basics.image}}<img class="profile-photo" src="{{basics.image}}" alt="{{basics.name}}" />{{/if}}{{/if}}
   </header>
 
   {{#if basics.summary}}
