@@ -10,19 +10,22 @@
   <!-- Reading order mirrors a recruiter's questions: who is this, are they relevant,
        what did they actually do, how have they grown. Single column, plain text order. -->
   <header class="header">
-    {{#if basics.name}}<h1>{{basics.name}}</h1>{{/if}}
-    {{#if basics.label}}<p class="headline">{{basics.label}}</p>{{/if}}
-    <p class="contact">
-      {{#if basics.email}}<a href="mailto:{{basics.email}}">{{basics.email}}</a>{{/if}}
-      {{#if basics.phone}}<br /><a href="tel:{{basics.phone}}">{{basics.phone}}</a>{{/if}}
-      {{#if basics.location.city}}<br />{{basics.location.city}}{{#if basics.location.countryCode}}, {{countryName basics.location.countryCode}}{{/if}}{{else}}{{#if basics.location.countryCode}}<br />{{countryName basics.location.countryCode}}{{/if}}{{/if}}
-    </p>
-    <p class="contact">
-      {{#if basics.url}}<a href="{{basics.url}}">{{stripProtocol basics.url}}</a>{{/if}}
-      {{#each basics.profiles}}
-        {{#if url}}<br /><a href="{{url}}">{{stripProtocol url}}</a>{{else}}{{#if username}}<br />{{#if network}}{{network}}: {{/if}}{{username}}{{/if}}{{/if}}
-      {{/each}}
-    </p>
+    <div class="header-main">
+      {{#if basics.name}}<h1>{{basics.name}}</h1>{{/if}}
+      {{#if basics.label}}<p class="headline">{{basics.label}}</p>{{/if}}
+      <p class="contact">
+        {{#if basics.email}}<a href="mailto:{{basics.email}}">{{basics.email}}</a>{{/if}}
+        {{#if basics.phone}}<br /><a href="tel:{{basics.phone}}">{{basics.phone}}</a>{{/if}}
+        {{#if basics.location.city}}<br />{{basics.location.city}}{{#if basics.location.countryCode}}, {{countryName basics.location.countryCode}}{{/if}}{{else}}{{#if basics.location.countryCode}}<br />{{countryName basics.location.countryCode}}{{/if}}{{/if}}
+      </p>
+      <p class="contact">
+        {{#if basics.url}}<a href="{{basics.url}}">{{stripProtocol basics.url}}</a>{{/if}}
+        {{#each basics.profiles}}
+          {{#if url}}<br /><a href="{{url}}">{{stripProtocol url}}</a>{{else}}{{#if username}}<br />{{#if network}}{{network}}: {{/if}}{{username}}{{/if}}{{/if}}
+        {{/each}}
+      </p>
+    </div>
+    {{#if basics.includeProfileImage}}{{#if basics.image}}<img class="profile-photo" src="{{basics.image}}" alt="{{basics.name}}" />{{/if}}{{/if}}
   </header>
 
   {{#if basics.summary}}

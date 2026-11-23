@@ -8,19 +8,22 @@
 <body>
 
   <div class="header">
-    <h1 class="name">{{basics.name}}</h1>
-    <p class="label">{{basics.label}}</p>
-    <div class="contact">
-      {{#if basics.location.city}}<span>{{basics.location.city}}{{#if basics.location.countryCode}}, {{countryName basics.location.countryCode}}{{/if}}</span>{{/if}}
-      {{#if basics.phone}}<span>&bull; {{basics.phone}}</span>{{/if}}
-      {{#if basics.email}}<span>&bull; {{basics.email}}</span>{{/if}}
+    <div class="header-main">
+      <h1 class="name">{{basics.name}}</h1>
+      <p class="label">{{basics.label}}</p>
+      <div class="contact">
+        {{#if basics.location.city}}<span>{{basics.location.city}}{{#if basics.location.countryCode}}, {{countryName basics.location.countryCode}}{{/if}}</span>{{/if}}
+        {{#if basics.phone}}<span>&bull; {{basics.phone}}</span>{{/if}}
+        {{#if basics.email}}<span>&bull; {{basics.email}}</span>{{/if}}
+      </div>
+      <div class="contact contact-links">
+        {{#if basics.url}}<span>Portfolio: <a href="{{basics.url}}">{{stripProtocol basics.url}}</a></span>{{/if}}
+        {{#each basics.profiles}}
+          <span>| {{this.network}}: {{#if this.url}}<a href="{{this.url}}">{{this.username}}</a>{{else}}{{this.username}}{{/if}}</span>
+        {{/each}}
+      </div>
     </div>
-    <div class="contact contact-links">
-      {{#if basics.url}}<span>Portfolio: <a href="{{basics.url}}">{{stripProtocol basics.url}}</a></span>{{/if}}
-      {{#each basics.profiles}}
-        <span>| {{this.network}}: {{#if this.url}}<a href="{{this.url}}">{{this.username}}</a>{{else}}{{this.username}}{{/if}}</span>
-      {{/each}}
-    </div>
+    {{#if basics.includeProfileImage}}{{#if basics.image}}<img class="profile-photo" src="{{basics.image}}" alt="{{basics.name}}" />{{/if}}{{/if}}
   </div>
 
   {{#if basics.summary}}
