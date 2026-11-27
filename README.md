@@ -124,6 +124,7 @@ scripts/
   update-resume.yml                Flow A: repository_dispatch -> AI -> merge -> PDF -> upload to Drive
   update-work-experience.yml       Flow B: issues:opened -> AI -> merge -> PDF -> upload to Drive -> close issue
   regenerate-pdf.yml               workflow_dispatch: re-render the PDF + re-upload (used by resume-admin)
+  generate-jobmail-resume.yml      workflow_dispatch: transient tailored PDF artifact (used by JobMail)
   discover-projects.yml            Daily + workflow_dispatch: runs discover-projects.js
   sync-drive-mockups.yml           workflow_dispatch: runs sync-drive-folders.js (used by resume-admin)
 .github/ISSUE_TEMPLATE/
@@ -135,6 +136,21 @@ notifier-template/notify-resume.yml  Template to copy into each tracked project 
 [`resume-data`](https://github.com/ChamathDilshanC/resume-data) repo — every
 workflow here checks it out into `data/` alongside this repo before touching
 it (see **One-time setup** below).
+
+## JobMail tailored resume workflow
+
+`generate-jobmail-resume.yml` is a manually dispatched, isolated rendering
+path used by DevResume Admin for JobMail applications. It accepts a request ID,
+target role, optional target company, and optional job description. The runner
+checks out a private copy of `resume-data`, passes the context to
+`generate-pdf.js`, and uploads `resume.pdf` plus its display name as a one-day
+GitHub Actions artifact.
+
+The renderer overlays `basics.label`, `basics.targetCompany`, and
+`basics.jobDescription` only in memory. It never commits the overlay to
+`resume-data`, updates the canonical Google Drive file, or sends the tailored
+file through the normal delivery workflows. Artifact names include the opaque
+request ID so the server can retrieve only the matching result.
 
 ## One-time setup
 
