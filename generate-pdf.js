@@ -172,8 +172,20 @@ async function generateResumePdf() {
         technologies: (project.technologies || []).slice(0, 10),
       }))
     : optimizedProjects;
+  // JobMail tailored generations are intentionally transient: the worker
+  // overlays the requested target on a private copy and never commits it back
+  // to resume-data or replaces the user's canonical Drive PDF.
+  const targetRole = String(process.env.TARGET_ROLE || "").trim();
+  const targetCompany = String(process.env.TARGET_COMPANY || "").trim();
+  const jobDescription = String(process.env.JOB_DESCRIPTION || "").trim();
   const resumeData = {
     ...sourceData,
+    basics: {
+      ...(sourceData.basics || {}),
+      ...(targetRole ? { label: targetRole } : {}),
+      ...(targetCompany ? { targetCompany } : {}),
+      ...(jobDescription ? { jobDescription } : {}),
+    },
     projects: renderedProjects,
     references: templateNameHint === "signal-ats" && resumeFormat.includeReferences !== true
       ? []
