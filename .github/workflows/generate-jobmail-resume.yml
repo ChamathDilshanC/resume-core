@@ -1,0 +1,77 @@
+name: Generate JobMail Tailored Resume
+
+run-name: JobMail tailored resume ${{ inputs.request_id }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      request_id:
+        description: "Opaque JobMail generation request ID"
+        required: true
+        type: string
+      target_role:
+        description: "Target role or headline"
+        required: true
+        type: string
+      target_company:
+        description: "Target company"
+        required: false
+        type: string
+      job_description:
+        description: "Optional job description used as tailoring context"
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: jobmail-resume-${{ inputs.request_id }}
+  cancel-in-progress: false
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      RESUME_JSON_PATH: ${{ github.workspace }}/data/resume.json
+      TARGET_ROLE: ${{ inputs.target_role }}
+      TARGET_COMPANY: ${{ inputs.target_company }}
+      JOB_DESCRIPTION: ${{ inputs.job_description }}
+    steps:
+      - name: Checkout resume-core
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Checkout resume-data (private)
+        uses: actions/checkout@v4
+        with:
+          repository: ChamathDilshanC/resume-data
+          token: ${{ secrets.RESUME_DATA_PAT }}
+          ref: main
+          path: data
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Calibri-compatible font (Carlito)
+        run: sudo apt-get update && sudo apt-get install -y fonts-crosextra-carlito
+
+      - name: Generate tailored resume.pdf
+        run: node generate-pdf.js
+
+      - name: Upload tailored PDF artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: jobmail-resume-${{ inputs.request_id }}
+          path: |
+            resume.pdf
+            resume-name.txt
+          retention-days: 1
